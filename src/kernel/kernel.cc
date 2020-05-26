@@ -21,7 +21,6 @@ extern "C"
 }
 
 #include "mini_uart.hh"
-#include "interrupt_controller.hh"
 #include "klib.hh"
 #include "io.h"
 
@@ -43,41 +42,6 @@ namespace kstd_test {
 	}
 }
 
-namespace kernel_test {
-	const unsigned int interval = 200000;
-	volatile unsigned int curVal = 0;
-
-	void timer_handler();
-
-	void timer_init() {
-		curVal = mem_get32(TIMER_CLO);
-		curVal += interval;
-		mem_put32(TIMER_C1, curVal); 
-		mem_put32(TIMER_CS, TIMER_CS_M1);
-
-
-		excpt::irq_desc timer;
-		timer.bank = ENABLE_IRQS_1;
-		timer.hardware_num = SYSTEM_TIMER_IRQ_1;
-		timer.handler = timer_handler;
-		excpt::add_irq_handler(timer);
-	}
-
-	void timer_handler() {
-		curVal += interval;
-		mem_put32(TIMER_C1, curVal);
-		mem_put32(TIMER_CS, TIMER_CS_M1);
-
-		kstd::printf("Received timer interrupt!!\r\n");
-	}
-
-	void all() {
-		kstd::printf("-- kernel::timer test\r\n");
-		timer_init();
-		kstd::printf("-- kernel::timer test ended\r\n");
-	}
-}
-
 extern "C" void kernel_main(void)
 {
 	// Initialize the mini uart for logging
@@ -94,21 +58,5 @@ extern "C" void kernel_main(void)
 	kstd_test::all();
 	kstd::printf("[+] Done!\r\n");
 
-	kstd::printf("[+] Initializing and configuring exceptions...\r\n");
-	excpt::initialize();
-	/// TODO: configure system error exception handler
-	kstd::printf("[+] Done!\r\n");
-
-	/// TODO: make able to dissable the tests at compile time
-	kstd::printf("[+] Starting kernel tests...\r\n");
-	kernel_test::all();
-	kstd::printf("[+] Done\r\n");
-
-	while (true) {
-		kstd::printf("While (true)\r\n");
-
-		int i = 0;
-		while(i < 100000)
-			i++;
-	}
+	while (true);
 }

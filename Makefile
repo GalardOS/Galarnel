@@ -11,7 +11,7 @@ LINKER_DIR = linker
 all : kernel8.img
 
 clean :
-	rm -rf $(BUILD_DIR)/*.o $(BUILD_DIR)/*.d $(BUILD_DIR)/*.elf
+	rm -rf $(BUILD_DIR)/*.o $(BUILD_DIR)/*.d $(BUILD_DIR)/*.elf kernel8.img
 
 # Kernel files
 $(BUILD_DIR)/%_s.o: $(KERNEL_SRC)/%.S
