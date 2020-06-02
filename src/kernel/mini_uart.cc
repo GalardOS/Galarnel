@@ -12,6 +12,7 @@
  *
  * Authors:
  *    - Iker Galardi
+ *    - Sergey Matyukevich
  */
 
 #include "mini_uart.hh"

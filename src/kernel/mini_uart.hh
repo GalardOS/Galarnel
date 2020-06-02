@@ -12,6 +12,7 @@
  *
  * Authors:
  *    - Iker Galardi
+ *    - Sergey Matyukevich
  */
 
 #pragma once
