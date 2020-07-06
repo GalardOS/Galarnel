@@ -1,4 +1,23 @@
+#
+# This project is provided under the GNU GPL v2 license, more information can 
+# found on https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+# 
+# Authors:
+#    - Iker Galardi
+# 
+
 ARMGNU ?= aarch64-linux-gnu
+COMPILER ?= aarch64-linux-gnu-gcc
+LINKER ?= aarch64-linux-gnu-ld
+OBJCOPY ?= aarch64-linux-gnu-objcopy
 
 COPS = -Wall -nostdlib -nostartfiles -ffreestanding -Isrc -Isrc/klib -Isrc/kernel -mgeneral-regs-only
 ASMOPS = -Isrc 
@@ -15,23 +34,23 @@ clean :
 
 # Kernel files
 $(BUILD_DIR)/%_s.o: $(KERNEL_SRC)/%.S
-	$(ARMGNU)-gcc $(ASMOPS) -MMD -c $< -o $@
+	$(COMPILER) $(ASMOPS) -MMD -c $< -o $@
 
 $(BUILD_DIR)/%_c.o: $(KERNEL_SRC)/%.c
 	mkdir -p $(@D)
-	$(ARMGNU)-gcc $(COPS) -MMD -c $< -o $@
+	$(COMPILER) $(COPS) -MMD -c $< -o $@
 
 $(BUILD_DIR)/%_cc.o: $(KERNEL_SRC)/%.cc
 	mkdir -p $(@D)
-	$(ARMGNU)-gcc $(COPS) -MMD -c $< -o $@
+	$(COMPILER) $(COPS) -MMD -c $< -o $@
 
 # Klib
 $(BUILD_DIR)/%_cc.o: $(KLIB_SRC)/%.cc
-	$(ARMGNU)-gcc $(COPS) -MMD -c $< -o $@
+	$(COMPILER) $(COPS) -MMD -c $< -o $@
 
 
 $(BUILD_DIR)/%_s.o: $(KLIB_SRC)/%.S
-	$(ARMGNU)-gcc $(ASMOPS) -MMD -c $< -o $@
+	$(COMPILER) $(ASMOPS) -MMD -c $< -o $@
 
 KERNEL_ASM_FILES = $(wildcard $(KERNEL_SRC)/*.S)
 KERNEL_C_FILES = $(wildcard $(KERNEL_SRC)/*.c)
@@ -50,5 +69,5 @@ DEP_FILES = $(OBJ_FILES:%.o=%.d)
 -include $(DEP_FILES)
 
 kernel8.img: $(LINKER_DIR)/linker.ld $(OBJ_FILES)
-	$(ARMGNU)-ld -T $(LINKER_DIR)/linker.ld -o $(BUILD_DIR)/kernel8.elf $(OBJ_FILES)
-	$(ARMGNU)-objcopy $(BUILD_DIR)/kernel8.elf -O binary kernel8.img
+	$(LINKER) -T $(LINKER_DIR)/linker.ld -o $(BUILD_DIR)/kernel8.elf $(OBJ_FILES)
+	$(OBJCOPY) $(BUILD_DIR)/kernel8.elf -O binary kernel8.img
