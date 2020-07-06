@@ -15,12 +15,12 @@
 # 
 
 ARMGNU ?= aarch64-linux-gnu
-COMPILER ?= aarch64-linux-gnu-gcc
+COMPILER ?= clang
 LINKER ?= aarch64-linux-gnu-ld
 OBJCOPY ?= aarch64-linux-gnu-objcopy
 
-COPS = -Wall -nostdlib -nostartfiles -ffreestanding -Isrc -Isrc/klib -Isrc/kernel -mgeneral-regs-only
-ASMOPS = -Isrc 
+COPS = --target=aarch64-elf -Wall -nostdlib -ffreestanding -Isrc -Isrc/klib -Isrc/kernel -mgeneral-regs-only
+ASMOPS = --target=aarch64-elf -Isrc 
 
 BUILD_DIR = build
 KLIB_SRC = src/klib
