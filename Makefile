@@ -18,8 +18,9 @@ COMPILER ?= clang --target=aarch64-elf
 LINKER ?= aarch64-linux-gnu-ld
 OBJCOPY ?= aarch64-linux-gnu-objcopy
 
-COPS = -Wall -nostdlib -ffreestanding -Isrc -Isrc/klib -Isrc/kernel -mgeneral-regs-only
-ASMOPS = -Isrc 
+CC_FLAGS = -Wall -nostdlib -ffreestanding -Isrc -Isrc/klib -Isrc/kernel -mgeneral-regs-only
+C_FLAGS = -Wall -nostdlib -ffreestanding -Isrc -Isrc/klib -Isrc/kernel -mgeneral-regs-only
+ASM_FLAGS = -Isrc 
 
 BUILD_DIR = build
 KLIB_SRC = src/klib
@@ -37,15 +38,15 @@ $(BUILD_DIR)/%_s.o: $(KERNEL_SRC)/%.S
 
 $(BUILD_DIR)/%_c.o: $(KERNEL_SRC)/%.c
 	mkdir -p $(@D)
-	$(COMPILER) $(COPS) -MMD -c $< -o $@
+	$(COMPILER) $(C_FLAGS) -MMD -c $< -o $@
 
 $(BUILD_DIR)/%_cc.o: $(KERNEL_SRC)/%.cc
 	mkdir -p $(@D)
-	$(COMPILER) $(COPS) -MMD -c $< -o $@
+	$(COMPILER) $(CC_FLAGS) -MMD -c $< -o $@
 
 # Klib
 $(BUILD_DIR)/%_cc.o: $(KLIB_SRC)/%.cc
-	$(COMPILER) $(COPS) -MMD -c $< -o $@
+	$(COMPILER) $(CC_FLAGS) -MMD -c $< -o $@
 
 
 $(BUILD_DIR)/%_s.o: $(KLIB_SRC)/%.S
