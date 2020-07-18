@@ -14,7 +14,6 @@
 #    - Iker Galardi
 # 
 
-ARMGNU ?= aarch64-linux-gnu
 COMPILER ?= clang --target=aarch64-elf
 LINKER ?= aarch64-linux-gnu-ld
 OBJCOPY ?= aarch64-linux-gnu-objcopy
