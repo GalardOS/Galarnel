@@ -26,7 +26,7 @@ set(CMAKE_CXX_COMPILER ${COMPILER})
 set(CMAKE_ASM_COMPILER ${COMPILER})
 
 # Set the linker
-set(LINKER "/usr/bin/aarch64-linux-gnu-ld")
+set(LINKER "/usr/bin/ld.lld")
 set(CMAKE_LINKER ${LINKER})
 
 # Setup compiler and linker flags
