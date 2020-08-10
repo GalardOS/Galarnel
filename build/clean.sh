@@ -1,6 +1,10 @@
 #!/bin/bash
 
 rm -rf CMakeFiles
-rm cmake_install.cmake
-rm CMakeCache.txt
-rm Makefile
+rm -f cmake_install.cmake
+rm -f CMakeCache.txt
+rm -f Makefile
+rm -f *.o
+rm -f *.d
+
+echo "Build files cleared"
