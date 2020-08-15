@@ -1,6 +1,6 @@
 #
 # This project is provided under the GNU GPL v2 license, more information can 
-# found on https://www.gnu.org/licenses/oLINKER-licenses/gpl-2.0.html
+# found on https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # 
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
