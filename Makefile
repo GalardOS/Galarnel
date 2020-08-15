@@ -14,60 +14,40 @@
 #    - Iker Galardi
 # 
 
-COMPILER ?= clang --target=aarch64-elf
-LINKER ?= aarch64-linux-gnu-ld
+CC ?= clang --target=aarch64-elf
+LD ?= aarch64-linux-gnu-ld
 OBJCOPY ?= aarch64-linux-gnu-objcopy
 
-CC_FLAGS = -Wall -nostdlib -ffreestanding -Isrc -Isrc/klib -Isrc/kernel -mgeneral-regs-only
-C_FLAGS = -Wall -nostdlib -ffreestanding -Isrc -Isrc/klib -Isrc/kernel -mgeneral-regs-only
-ASM_FLAGS = -Isrc 
+SOURCE_DIR = src
+INCLUDE_DIRS = -Isrc -Isrc/klib -Isrc/kernel
 
-BUILD_DIR = build
-KLIB_SRC = src/klib
-KERNEL_SRC = src/kernel
-LINKER_DIR = linker
+ALL_CC_FLAGS = -Wall -nostdlib -ffreestanding -mgeneral-regs-only -MMD $(INCLUDE_DIRS)
+ALL_C_FLAGS = -Wall -nostdlib -ffreestanding -mgeneral-regs-only -MMD $(INCLUDE_DIRS)
+ALL_ASM_FLAGS = $(INCLUDE_DIRS)
 
-all : kernel8.img
+# Get all the source files (.c .cc and .S)
+C_SOURCE_FILES = $(shell find $(SOURCE_DIR) -name '*.c')
+CC_SOURCE_FILES = $(shell find $(SOURCE_DIR) -name '*.cc')
+ASM_SOURCE_FILES = $(shell find $(SOURCE_DIR) -name '*.S')
 
-clean :
-	rm -rf $(BUILD_DIR)/*.o $(BUILD_DIR)/*.d $(BUILD_DIR)/*.elf kernel8.img
+OBJECT_FILES = $(addsuffix .o,$(basename $(C_SOURCE_FILES)))
+OBJECT_FILES += $(addsuffix .o,$(basename $(CC_SOURCE_FILES))))
+OBJECT_FILES += $(addsuffix .o,$(basename $(ASM_SOURCE_FILES)))
 
-# Kernel files
-$(BUILD_DIR)/%_s.o: $(KERNEL_SRC)/%.S
-	$(COMPILER) $(ASMOPS) -MMD -c $< -o $@
+all: kernel8.img
 
-$(BUILD_DIR)/%_c.o: $(KERNEL_SRC)/%.c
-	mkdir -p $(@D)
-	$(COMPILER) $(C_FLAGS) -MMD -c $< -o $@
+build/%.o: src/%.c 
+	$(CC) -c $< -o $@ $(ALL_C_FLAGS)
 
-$(BUILD_DIR)/%_cc.o: $(KERNEL_SRC)/%.cc
-	mkdir -p $(@D)
-	$(COMPILER) $(CC_FLAGS) -MMD -c $< -o $@
+build/%.o: src/%.cc
+	$(CC) -c $< -o $@ $(ALL_CC_FLAGS)
 
-# Klib
-$(BUILD_DIR)/%_cc.o: $(KLIB_SRC)/%.cc
-	$(COMPILER) $(CC_FLAGS) -MMD -c $< -o $@
+build/%.o: src/%.S 
+	$(CC) -c $< -o $@ $(ALL_ASM_FLAGS)
 
+clean:
+	rm -rf build/*.o build/*.d build/*.elf kernel8.img
 
-$(BUILD_DIR)/%_s.o: $(KLIB_SRC)/%.S
-	$(COMPILER) $(ASMOPS) -MMD -c $< -o $@
-
-KERNEL_ASM_FILES = $(wildcard $(KERNEL_SRC)/*.S)
-KERNEL_C_FILES = $(wildcard $(KERNEL_SRC)/*.c)
-KERNEL_CC_FILES = $(wildcard $(KERNEL_SRC)/*.cc)
-
-KLIB_ASM_FILES = $(wildcard $(KLIB_DIR)/*.S)
-KLIB_CC_FILES = $(wildcard src/klib/*.cc)
-
-OBJ_FILES = $(KERNEL_ASM_FILES:$(KERNEL_SRC)/%.S=$(BUILD_DIR)/%_s.o)
-OBJ_FILES += $(KERNEL_C_FILES:$(KERNEL_SRC)/%.c=$(BUILD_DIR)/%_c.o)
-OBJ_FILES += $(KERNEL_CC_FILES:$(KERNEL_SRC)/%.cc=$(BUILD_DIR)/%_cc.o)
-OBJ_FILES += $(KLIB_CC_FILES:$(KLIB_SRC)/%.cc=$(BUILD_DIR)/%_cc.o)
-OBJ_FILES += $(KLIB_ASM_FILES:$(KLIB_SRC)/%.S=$(BUILD_DIR)/%_s.o)
-
-DEP_FILES = $(OBJ_FILES:%.o=%.d)
--include $(DEP_FILES)
-
-kernel8.img: $(LINKER_DIR)/linker.ld $(OBJ_FILES)
-	$(LINKER) -T $(LINKER_DIR)/linker.ld -o $(BUILD_DIR)/kernel8.elf $(OBJ_FILES)
-	$(OBJCOPY) $(BUILD_DIR)/kernel8.elf -O binary kernel8.img
+kernel8.img: LD/LD.ld $(OBJECT_FILES)
+	$(LD) -T LD/LD.ld -o build/kernel8.elf $(OBJECT_FILES)
+	$(OBJCOPY) build/kernel8.elf -O binary kernel8.img
