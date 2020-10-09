@@ -8,6 +8,11 @@ function build()
     lmake_set_compiler(COMPILER)
     compile_kernel()
     compile_klib()
+
+    lmake_set_linker("/bin/aarch64-linux-gnu-ld")
+    lmake_set_linker_flags("-T linker/linker.ld")
+    lmake_set_linker_out("build/kernel8.elf")
+    lmake_link("build/boot.S.o build/cpu.S.o build/kernel.cc.o build/mini_uart.cc.o build/pre_kernel.S.o build/utils.S.o build/cstring.cc.o build/klib.cc.o build/printf.cc.o")
 end
 
 function compile_kernel()
