@@ -2,7 +2,7 @@ lmake_compatibility_version(1)
 
 COMPILER = "/bin/clang"
 LINKER = "/bin/ld.lld"
-CXX_FLAGS = "-Wall -nostdlib -nostartfiles -ffreestanding -Isrc -Isrc/klib -Isrc/kernel -mgeneral-regs-only"
+CXX_FLAGS = "-Wall -nostdlib -ffreestanding -Isrc -Isrc/klib -Isrc/kernel -mgeneral-regs-only"
 ASM_FLAGS = "-Isrc"
 
 
