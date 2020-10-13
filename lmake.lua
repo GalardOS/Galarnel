@@ -1,16 +1,18 @@
 lmake_compatibility_version(1)
 
 COMPILER = "/bin/clang"
-CXX_FLAGS = "-Wall -nostdlib -nostartfiles -ffreestanding -Isrc -Isrc/klib -Isrc/kernel -mgeneral-regs-only"
+LINKER = "/bin/ld.lld"
+CXX_FLAGS = "-Wall -nostdlib -ffreestanding -Isrc -Isrc/klib -Isrc/kernel -mgeneral-regs-only"
 ASM_FLAGS = "-Isrc"
+
 
 function build()
     lmake_set_compiler(COMPILER)
     compile_kernel()
     compile_klib()
 
-    lmake_set_linker("/bin/aarch64-linux-gnu-ld")
-    lmake_set_linker_flags("-T linker/linker.ld")
+    lmake_set_linker(LINKER)
+    lmake_set_linker_flags("-m aarch64elf -T linker/linker.ld")
     lmake_set_linker_out("build/kernel8.elf")
     lmake_link("build/boot.S.o build/cpu.S.o build/kernel.cc.o build/mini_uart.cc.o build/pre_kernel.S.o build/utils.S.o build/cstring.cc.o build/klib.cc.o build/printf.cc.o")
 end
