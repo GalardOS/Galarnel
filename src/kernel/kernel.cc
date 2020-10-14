@@ -14,11 +14,11 @@
  *    - Iker Galardi
  */
 
-extern "C" 
-{
-	#include "cpu.h"
+extern "C" {
 	#include "utils.h"
 }
+
+#include "hal/cpu.hh"
 
 #include "mini_uart.hh"
 #include "klib.hh"
