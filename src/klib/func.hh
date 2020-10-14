@@ -24,6 +24,10 @@ namespace kstd {
         func() : function_pointer(nullptr) {}
         func(T* function_pointer) : function_pointer(function_pointer) {}
 
+        T* operator&() {
+            return function_pointer;
+        }
+
         template<typename... vargs>
         auto execute(vargs... args) const {
             return function_pointer(args...);
