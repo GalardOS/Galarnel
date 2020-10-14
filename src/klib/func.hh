@@ -24,7 +24,11 @@ namespace kstd {
         func() : function_pointer(nullptr) {}
         func(T* function_pointer) : function_pointer(function_pointer) {}
 
-        T* operator&() {
+        T* operator&() const {
+            return function_pointer;
+        }
+
+        T* ptr() const {
             return function_pointer;
         }
 
