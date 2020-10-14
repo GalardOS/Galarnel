@@ -5,7 +5,5 @@ namespace cpu {
 
     int get_el();
     
-    void switch_to_kernelmode();
-    
     void switch_to_usermode();
 }
