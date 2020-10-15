@@ -13,6 +13,5 @@ namespace cpu {
 
             arch_setup_vector(sync_func, irq_func, fiq_func, err_func);
         }
-
     }
 }

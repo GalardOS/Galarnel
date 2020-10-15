@@ -2,6 +2,7 @@
 
 extern "C" {
     #include "hal/aarch64/aarch64_cpu.h"
+    #include "hal/aarch64/aarch64_sysregs.h"
 }
 
 namespace cpu {
@@ -15,5 +16,14 @@ namespace cpu {
     
     void switch_user_mode() {
         arch_switch_to_usermode();
+    }
+
+    long get_sysreg(sysreg reg) {
+        if(reg == sysreg::esr_el1)
+            return arch_sysreg_esr_el1();
+        else if(reg == sysreg::esr_el0)
+            return arch_sysreg_esr_el0();
+
+        return 0;
     }
 }
