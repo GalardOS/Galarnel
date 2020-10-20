@@ -46,13 +46,13 @@ void irq_exception(void) {
 }
 
 void fiq_exception(void) {
-    long esr = arch_sysreg_esr_el1();
+    long esr = arch_sysreg_esr();
     long elr = arch_sysreg_elr();
     arch_vector_table.fiq(esr, elr);
 }
 
 void error_exception(void) {
-    long esr = arch_sysreg_esr_el1();
+    long esr = arch_sysreg_esr();
     long elr = arch_sysreg_elr();
     arch_vector_table.err(esr, elr);
 }
