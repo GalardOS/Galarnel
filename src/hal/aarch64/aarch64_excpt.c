@@ -17,7 +17,7 @@
 #include "aarch64_excpt.h"
 #include "aarch64_sysregs.h"
 
-struct {
+static struct {
     vect_func sync;
     vect_func irq;
     vect_func fiq;
