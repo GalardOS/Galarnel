@@ -46,8 +46,9 @@ function compile_hal()
     lmake_set_compiler_out("build/%.o")
     lmake_compile("src/hal/cpu.cc src/hal/excpt.cc")
 
-    lmake_set_compiler_flags(CLANG_TARGET .. ASM_FLAGS)
     if ARCH == "aarch64" then
-        lmake_compile("src/hal/aarch64/aarch64_cpu.S")
+        lmake_compile("src/hal/aarch64/aarch64_excpt.c")
+        lmake_set_compiler_flags(CLANG_TARGET .. ASM_FLAGS)
+        lmake_compile("src/hal/aarch64/aarch64_cpu.S src/hal/aarch64/aarch64_excpt.S src/hal/aarch64/aarch64_sysregs.S")
     end
 end
