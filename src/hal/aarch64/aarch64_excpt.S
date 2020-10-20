@@ -60,7 +60,7 @@
 .endm
 
 .align	11
-.globl vectors 
+.globl vector 
 vectors:
 	vector_entry invalid_entry			// Synchronous EL1t
 	vector_entry invalid_entry			// IRQ EL1t
@@ -81,6 +81,12 @@ vectors:
 	vector_entry invalid_entry			// IRQ 32-bit EL0
 	vector_entry invalid_entry			// FIQ 32-bit EL0
 	vector_entry invalid_entry			// Error 32-bit EL0
+
+.globl arch_setup_vector_regs
+arch_setup_vector_regs:
+	adr x0, vector
+	msr vbar_el1, x0
+	ret
 
 invalid_entry:
     eret
