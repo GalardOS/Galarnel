@@ -62,25 +62,25 @@
 .align	11
 .globl vectors 
 vectors:
-	ventry	invalid_entry			// Synchronous EL1t
-	ventry	invalid_entry			// IRQ EL1t
-	ventry	invalid_entry			// FIQ EL1t
-	ventry	invalid_entry			// Error EL1t
+	vector_entry invalid_entry			// Synchronous EL1t
+	vector_entry invalid_entry			// IRQ EL1t
+	vector_entry invalid_entry			// FIQ EL1t
+	vector_entry invalid_entry			// Error EL1t
 
-	ventry	sync_asm			    // Synchronous EL1h
-	ventry	irq_asm				    // IRQ EL1h
-	ventry	fiq_asm			        // FIQ EL1h
-	ventry	err_asm			        // Error EL1h
+	vector_entry sync_asm			    // Synchronous EL1h
+	vector_entry irq_asm				    // IRQ EL1h
+	vector_entry fiq_asm			        // FIQ EL1h
+	vector_entry err_asm			        // Error EL1h
 
-	ventry	invalid_entry			// Synchronous 64-bit EL0
-	ventry	invalid_entry			// IRQ 64-bit EL0
-	ventry	invalid_entry			// FIQ 64-bit EL0
-	ventry	invalid_entry		    // Error 64-bit EL0
+	vector_entry invalid_entry			// Synchronous 64-bit EL0
+	vector_entry invalid_entry			// IRQ 64-bit EL0
+	vector_entry invalid_entry			// FIQ 64-bit EL0
+	vector_entry invalid_entry		    // Error 64-bit EL0
 
-	ventry	invalid_entry			// Synchronous 32-bit EL0
-	ventry	invalid_entry			// IRQ 32-bit EL0
-	ventry	invalid_entry			// FIQ 32-bit EL0
-	ventry	invalid_entry			// Error 32-bit EL0
+	vector_entry invalid_entry			// Synchronous 32-bit EL0
+	vector_entry invalid_entry			// IRQ 32-bit EL0
+	vector_entry invalid_entry			// FIQ 32-bit EL0
+	vector_entry invalid_entry			// Error 32-bit EL0
 
 invalid_entry:
     eret
