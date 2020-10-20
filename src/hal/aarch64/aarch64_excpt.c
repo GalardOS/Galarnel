@@ -34,21 +34,25 @@ void arch_setup_vector(vect_func sync, vect_func irq, vect_func fiq, vect_func e
 }
 
 void synchronous_exception(void) {
-    long esr = arch_sysreg_esr_el1();
-    arch_vector_table.sync(esr);
+    long esr = arch_sysreg_esr();
+    long elr = arch_sysreg_elr();
+    arch_vector_table.sync(esr, elr);
 }
 
 void irq_exception(void) {
-    long esr = arch_sysreg_esr_el1();
-    arch_vector_table.irq(esr);
+    long esr = arch_sysreg_esr();
+    long elr = arch_sysreg_elr();
+    arch_vector_table.irq(esr, elr);
 }
 
 void fiq_exception(void) {
     long esr = arch_sysreg_esr_el1();
-    arch_vector_table.fiq(esr);
+    long elr = arch_sysreg_elr();
+    arch_vector_table.fiq(esr, elr);
 }
 
 void error_exception(void) {
     long esr = arch_sysreg_esr_el1();
-    arch_vector_table.err(esr);
+    long elr = arch_sysreg_elr();
+    arch_vector_table.err(esr, elr);
 }
