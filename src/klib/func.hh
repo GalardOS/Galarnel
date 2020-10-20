@@ -36,8 +36,14 @@ namespace kstd {
         auto execute(vargs... args) const {
             return function_pointer(args...);
         }
+
+        static func<T> null() {
+            return func();
+        }
     private:
         T* function_pointer;
     protected:
     };
+
+
 }
