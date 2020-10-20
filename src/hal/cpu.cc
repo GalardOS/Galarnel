@@ -35,10 +35,10 @@ namespace cpu {
     }
 
     long get_sysreg(sysreg reg) {
-        if(reg == sysreg::esr_el1)
-            return arch_sysreg_esr_el1();
-        else if(reg == sysreg::esr_el0)
-            return arch_sysreg_esr_el0();
+        if(reg == sysreg::esr)
+            return arch_sysreg_esr();
+        else if(reg == sysreg::elr)
+            return arch_sysreg_esr();
 
         return 0;
     }

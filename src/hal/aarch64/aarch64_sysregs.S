@@ -15,11 +15,11 @@
  */
 
 .globl arch_sysreg_esr_el1
-arch_sysreg_esr_el1:
+arch_sysreg_esr:
     mrs x0, esr_el1
     ret
 
-.globl arch_sysreg_esr_el0
-arch_sysreg_esr_el0:
-    mrs x0, esr_el0
+.globl arch_sysreg_esr_el1
+arch_sysreg_elr:
+    mrs x0, elr_el1
     ret

@@ -19,7 +19,7 @@
 namespace cpu {
     
     enum class sysreg {
-        esr_el1, esr_el0
+        esr, elr
     };
 
     int get_thread_id();

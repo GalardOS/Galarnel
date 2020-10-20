@@ -68,9 +68,9 @@ vectors:
 	vector_entry invalid_entry			// Error EL1t
 
 	vector_entry sync_asm			    // Synchronous EL1h
-	vector_entry irq_asm				    // IRQ EL1h
-	vector_entry fiq_asm			        // FIQ EL1h
-	vector_entry err_asm			        // Error EL1h
+	vector_entry irq_asm				// IRQ EL1h
+	vector_entry fiq_asm			    // FIQ EL1h
+	vector_entry err_asm			    // Error EL1h
 
 	vector_entry invalid_entry			// Synchronous 64-bit EL0
 	vector_entry invalid_entry			// IRQ 64-bit EL0
