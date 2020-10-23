@@ -14,11 +14,12 @@
  *    - Iker Galardi
  */
 
-extern "C" 
-{
-	#include "cpu.h"
+extern "C" {
 	#include "utils.h"
 }
+
+#include "hal/cpu.hh"
+#include "hal/excpt.hh"
 
 #include "mini_uart.hh"
 #include "klib.hh"
@@ -53,9 +54,16 @@ extern "C" void kernel_main(void)
 	kstd::initialize();
 	kstd::printf("[+] Done!\r\n");
 
-	/// TODO: make able to dissable the tests at compile time
-	kstd::printf("[+] Starting klib tests...\r\n");
-	kstd_test::all();
+	// Setting up the vector table
+	kstd::printf("[+] Setting up vector table... \r\n");
+	cpu::excp::vector_table table {
+		.sync_excpt = kstd::func<void(long, long)>::null(),
+		.irq_excpt = kstd::func<void(long, long)>::null(),
+		.fiq_excpt = kstd::func<void(long, long)>::null(),
+		.err_excpt = kstd::func<void(long, long)>::null()
+	};
+	
+	cpu::excp::setup_vector(table);
 	kstd::printf("[+] Done!\r\n");
 
 	while (true);

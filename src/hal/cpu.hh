@@ -16,34 +16,17 @@
 
 #pragma once
 
-namespace kstd {
+namespace cpu {
     
-    template<typename T> 
-    class func {
-    public:
-        func() : function_pointer(nullptr) {}
-        func(T* function_pointer) : function_pointer(function_pointer) {}
-
-        T* operator&() const {
-            return function_pointer;
-        }
-
-        T* ptr() const {
-            return function_pointer;
-        }
-
-        template<typename... vargs>
-        auto execute(vargs... args) const {
-            return function_pointer(args...);
-        }
-
-        static func<T> null() {
-            return func();
-        }
-    private:
-        T* function_pointer;
-    protected:
+    enum class sysreg {
+        esr, elr
     };
 
+    int get_thread_id();
 
+    int get_el();
+    
+    void switch_to_usermode();
+
+    long get_sysreg(sysreg reg);
 }

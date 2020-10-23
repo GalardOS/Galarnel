@@ -14,36 +14,11 @@
  *    - Iker Galardi
  */
 
-#pragma once
+#ifndef AARCH64_SYSREGS_H
+#define AARCH64_SYSREGS_H
 
-namespace kstd {
-    
-    template<typename T> 
-    class func {
-    public:
-        func() : function_pointer(nullptr) {}
-        func(T* function_pointer) : function_pointer(function_pointer) {}
+long arch_sysreg_esr();
 
-        T* operator&() const {
-            return function_pointer;
-        }
+long arch_sysreg_elr();
 
-        T* ptr() const {
-            return function_pointer;
-        }
-
-        template<typename... vargs>
-        auto execute(vargs... args) const {
-            return function_pointer(args...);
-        }
-
-        static func<T> null() {
-            return func();
-        }
-    private:
-        T* function_pointer;
-    protected:
-    };
-
-
-}
+#endif // AARCH64_SYSREGS_H

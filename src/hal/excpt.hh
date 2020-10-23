@@ -14,8 +14,19 @@
  *    - Iker Galardi
  */
 
-.globl cpu_get_el
-cpu_get_el:
-    mrs x0, CurrentEL
-    lsr x0, x0, #2
-    ret
+#pragma once
+
+#include "klib/func.hh"
+
+namespace cpu {
+    namespace excp {
+        struct vector_table {
+            kstd::func<void(long, long)> sync_excpt;
+            kstd::func<void(long, long)> irq_excpt;
+            kstd::func<void(long, long)> fiq_excpt;
+            kstd::func<void(long, long)> err_excpt;
+        };
+
+        void setup_vector(const vector_table& vt);
+    }
+}

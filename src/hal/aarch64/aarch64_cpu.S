@@ -14,36 +14,17 @@
  *    - Iker Galardi
  */
 
-#pragma once
+.globl arch_get_thread_id
+arch_get_thread_id:
+    mrs x0, mpidr_el1
+    ret
 
-namespace kstd {
-    
-    template<typename T> 
-    class func {
-    public:
-        func() : function_pointer(nullptr) {}
-        func(T* function_pointer) : function_pointer(function_pointer) {}
+.globl arch_get_el
+arch_get_el:
+    mrs x0, CurrentEL
+    lsr x0, x0, #2
+    ret
 
-        T* operator&() const {
-            return function_pointer;
-        }
-
-        T* ptr() const {
-            return function_pointer;
-        }
-
-        template<typename... vargs>
-        auto execute(vargs... args) const {
-            return function_pointer(args...);
-        }
-
-        static func<T> null() {
-            return func();
-        }
-    private:
-        T* function_pointer;
-    protected:
-    };
-
-
-}
+.globl arch_switch_to_usermode
+arch_switch_to_usermode:
+    ret

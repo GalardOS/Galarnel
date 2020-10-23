@@ -14,36 +14,32 @@
  *    - Iker Galardi
  */
 
-#pragma once
+#include "cpu.hh"
 
-namespace kstd {
+extern "C" {
+    #include "hal/aarch64/aarch64_cpu.h"
+    #include "hal/aarch64/aarch64_sysregs.h"
+}
+
+namespace cpu {
+    int get_thread_id() {
+        return arch_get_thread_id();
+    }
+
+    int get_el() {
+        return arch_get_el();
+    }
     
-    template<typename T> 
-    class func {
-    public:
-        func() : function_pointer(nullptr) {}
-        func(T* function_pointer) : function_pointer(function_pointer) {}
+    void switch_user_mode() {
+        arch_switch_to_usermode();
+    }
 
-        T* operator&() const {
-            return function_pointer;
-        }
+    long get_sysreg(sysreg reg) {
+        if(reg == sysreg::esr)
+            return arch_sysreg_esr();
+        else if(reg == sysreg::elr)
+            return arch_sysreg_esr();
 
-        T* ptr() const {
-            return function_pointer;
-        }
-
-        template<typename... vargs>
-        auto execute(vargs... args) const {
-            return function_pointer(args...);
-        }
-
-        static func<T> null() {
-            return func();
-        }
-    private:
-        T* function_pointer;
-    protected:
-    };
-
-
+        return 0;
+    }
 }

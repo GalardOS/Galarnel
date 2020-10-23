@@ -14,36 +14,20 @@
  *    - Iker Galardi
  */
 
-#pragma once
+#include "excpt.hh"
 
-namespace kstd {
-    
-    template<typename T> 
-    class func {
-    public:
-        func() : function_pointer(nullptr) {}
-        func(T* function_pointer) : function_pointer(function_pointer) {}
+#include "aarch64/aarch64_excpt.h"
 
-        T* operator&() const {
-            return function_pointer;
+namespace cpu {
+    namespace excp {
+
+        void setup_vector(const vector_table& vt) {
+            auto sync_func = &vt.sync_excpt;
+            auto irq_func = &vt.irq_excpt;
+            auto fiq_func = &vt.fiq_excpt;
+            auto err_func = &vt.err_excpt;
+
+            arch_setup_vector(sync_func, irq_func, fiq_func, err_func);
         }
-
-        T* ptr() const {
-            return function_pointer;
-        }
-
-        template<typename... vargs>
-        auto execute(vargs... args) const {
-            return function_pointer(args...);
-        }
-
-        static func<T> null() {
-            return func();
-        }
-    private:
-        T* function_pointer;
-    protected:
-    };
-
-
+    }
 }

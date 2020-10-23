@@ -14,36 +14,12 @@
  *    - Iker Galardi
  */
 
-#pragma once
+.globl arch_sysreg_esr_el1
+arch_sysreg_esr:
+    mrs x0, esr_el1
+    ret
 
-namespace kstd {
-    
-    template<typename T> 
-    class func {
-    public:
-        func() : function_pointer(nullptr) {}
-        func(T* function_pointer) : function_pointer(function_pointer) {}
-
-        T* operator&() const {
-            return function_pointer;
-        }
-
-        T* ptr() const {
-            return function_pointer;
-        }
-
-        template<typename... vargs>
-        auto execute(vargs... args) const {
-            return function_pointer(args...);
-        }
-
-        static func<T> null() {
-            return func();
-        }
-    private:
-        T* function_pointer;
-    protected:
-    };
-
-
-}
+.globl arch_sysreg_esr_el1
+arch_sysreg_elr:
+    mrs x0, elr_el1
+    ret
