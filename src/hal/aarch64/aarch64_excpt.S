@@ -113,8 +113,4 @@ err_asm:
     save_registers
     bl error_exception
     recover_registers
-    eret
-
-.globl arch_setup_vector_regs
-arch_setup_vector_regs:
-        
+    eret        
