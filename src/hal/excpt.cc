@@ -16,7 +16,9 @@
 
 #include "excpt.hh"
 
-#include "aarch64/aarch64_excpt.h"
+extern "C" {
+    #include "aarch64/aarch64_excpt.h"
+}
 
 namespace cpu {
     namespace excp {
