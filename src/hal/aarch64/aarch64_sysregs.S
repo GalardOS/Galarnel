@@ -14,12 +14,12 @@
  *    - Iker Galardi
  */
 
-.globl arch_sysreg_esr_el1
+.globl arch_sysreg_esr
 arch_sysreg_esr:
     mrs x0, esr_el1
     ret
 
-.globl arch_sysreg_esr_el1
+.globl arch_sysreg_esr
 arch_sysreg_elr:
     mrs x0, elr_el1
     ret
