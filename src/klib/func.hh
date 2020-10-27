@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include <klib/printf.hh>
+
 namespace kstd {
     
     template<typename T> 
@@ -34,6 +36,10 @@ namespace kstd {
 
         template<typename... vargs>
         auto execute(vargs... args) const {
+            if(!function_pointer) {
+                /// TODO: dont execute and return nothing (default constructed return of function??)
+                kstd::printf("[E] Tried to call null function\r\n");
+            }
             return function_pointer(args...);
         }
 
