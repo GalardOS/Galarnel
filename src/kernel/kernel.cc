@@ -25,24 +25,6 @@ extern "C" {
 #include "klib.hh"
 #include "io.h"
 
-namespace kstd_test {
-	int func_test(int gg) {
-		return gg;
-	}
-	
-	void kstd_func() {
-		kstd::func<int(int)> fntest(func_test);
-		int r = fntest.execute(7);
-		kstd::printf("function result value: %d\r\n", r);
-	}
-
-	void all() {
-		kstd::printf("-- kstd::func test\r\n");
-		kstd_func();
-		kstd::printf("-- kstd::func test ended\r\n");
-	}
-}
-
 extern "C" void kernel_main(void)
 {
 	// Initialize the mini uart for logging
