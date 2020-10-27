@@ -19,7 +19,7 @@ arch_sysreg_esr:
     mrs x0, esr_el1
     ret
 
-.globl arch_sysreg_esr
+.globl arch_sysreg_elr
 arch_sysreg_elr:
     mrs x0, elr_el1
     ret
