@@ -23,4 +23,9 @@ void arch_setup_vector(vect_func sync, vect_func irq, vect_func fiq, vect_func e
 
 void arch_setup_vector_regs();
 
+void arch_enable_irq();
+
+void arch_disable_irq();
+
+
 #endif // AARCH64_EXCPT_H
