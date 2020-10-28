@@ -113,4 +113,13 @@ err_asm:
     save_registers
     bl error_exception
     recover_registers
-    eret        
+    eret       
+
+.globl arch_enable_irq
+arch_enable_irq:
+    msr daifclr, #2
+    ret
+.globl arch_disable_irq
+arch_disable_irq:
+    msr daifset, #2
+    ret

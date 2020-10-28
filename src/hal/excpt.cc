@@ -31,5 +31,13 @@ namespace cpu {
 
             arch_setup_vector(sync_func, irq_func, fiq_func, err_func);
         }
+
+        void enable_irq() {
+            arch_enable_irq();
+        }
+        
+        void disable_irq() {
+            arch_disable_irq();
+        }
     }
 }

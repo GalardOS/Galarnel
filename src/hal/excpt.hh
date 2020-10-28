@@ -28,5 +28,9 @@ namespace cpu {
         };
 
         void setup_vector(const vector_table& vt);
+
+        void enable_irq();
+        
+        void disable_irq();
     }
 }
