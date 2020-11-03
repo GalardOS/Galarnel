@@ -20,6 +20,7 @@ extern "C" {
 
 #include "hal/cpu.hh"
 #include "hal/excpt.hh"
+#include "hal/interrupts.hh"
 
 #include "mini_uart.hh"
 #include "klib.hh"
@@ -40,7 +41,7 @@ extern "C" void kernel_main(void)
 	kstd::printf("[+] Setting up vector table... \r\n");
 	cpu::excp::vector_table table {
 		.sync_excpt = kstd::func<void(long, long)>::null(),
-		.irq_excpt = kstd::func<void(long, long)>::null(),
+		.irq_excpt = intc::generic_irq_handler,
 		.fiq_excpt = kstd::func<void(long, long)>::null(),
 		.err_excpt = kstd::func<void(long, long)>::null()
 	};
