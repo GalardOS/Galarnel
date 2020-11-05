@@ -47,7 +47,7 @@ namespace kstd
                 // TODO: throw an error message
             #endif
 
-            return data[n];
+            return data[i];
         }
         T& operator[](unsigned int i)
         {
@@ -56,7 +56,7 @@ namespace kstd
                 // TODO: throw an error message
             #endif
 
-            return data[n];
+            return data[i];
         }
 
         unsigned int size() const 
