@@ -18,6 +18,10 @@
 
 #include "klib/array.hh"
 
+extern "C" {
+    #include "kernel/utils.h"
+}
+
 struct handler_pair {
     intc::id id;
     kstd::func<void(void)> handler;
@@ -45,8 +49,9 @@ namespace intc {
         pair.handler = handler;
         pair.cleaner = cleaner;
 
-
         interrupt_handlers[handler_count++] = pair;
+    
+        mem_put32(id.domain, id.device_number);
     }
 
     void generic_irq_handler(long, long) {
