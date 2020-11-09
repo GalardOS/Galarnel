@@ -20,10 +20,39 @@ extern "C" {
 
 #include "hal/cpu.hh"
 #include "hal/excpt.hh"
+#include "hal/interrupts.hh"
 
 #include "mini_uart.hh"
 #include "klib.hh"
 #include "io.h"
+
+namespace timer {
+	unsigned int interval = 20000000;
+	int cur_val = 0;
+
+	void handler() {
+		kstd::printf("Klos \r\n");
+	}
+
+	void clearer() {
+
+	}
+	void init() {
+		intc::id id;
+		id.domain = ENABLE_IRQS_1;
+		id.device_number = SYSTEM_TIMER_IRQ_1;
+		
+		kstd::printf("jandler addedl\r\n");
+		intc::add_handler(id, handler, clearer);
+		kstd::printf("taimer adedd\r\n");
+
+		kstd::printf("konsfigurins <:)\r\n");
+		cur_val = mem_get32(TIMER_C0);
+		cur_val += interval;
+		mem_put32(TIMER_C1, cur_val);
+		kstd::printf("consfijured closk\r\n");
+	}
+}
 
 extern "C" void kernel_main(void)
 {
@@ -40,13 +69,25 @@ extern "C" void kernel_main(void)
 	kstd::printf("[+] Setting up vector table... \r\n");
 	cpu::excp::vector_table table {
 		.sync_excpt = kstd::func<void(long, long)>::null(),
-		.irq_excpt = kstd::func<void(long, long)>::null(),
+		.irq_excpt = kstd::func<void(long, long)>(intc::generic_irq_handler),
 		.fiq_excpt = kstd::func<void(long, long)>::null(),
 		.err_excpt = kstd::func<void(long, long)>::null()
 	};
 	
 	cpu::excp::setup_vector(table);
+	cpu::excp::enable_irq();
 	kstd::printf("[+] Done!\r\n");
 
-	while (true);
+	kstd::printf("[+] Setting up timer interrupts\r\n");
+	timer::init();
+	kstd::printf("[+] Done!");
+
+	int i = 0;
+	while (true) {
+		kstd::printf("[+] Doing nothing %d\r\n", i);
+		for(int i = 0; i < 0xFFFFF; i++);
+		i++;
+	}
+
+	kstd::printf("[+] Should not be here wtf\r\n");
 }

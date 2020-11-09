@@ -50,8 +50,8 @@ end
 function compile_hal()
     lmake_set_compiler_flags(CLANG_TARGET .. CXX_FLAGS)
     lmake_set_compiler_out("build/%.o")
-    lmake_compile("src/hal/cpu.cc src/hal/excpt.cc")
-    OBJECT_FILES = OBJECT_FILES .. "build/cpu.cc.o build/excpt.cc.o "
+    lmake_compile("src/hal/cpu.cc src/hal/excpt.cc src/hal/interrupts.cc")
+    OBJECT_FILES = OBJECT_FILES .. "build/cpu.cc.o build/excpt.cc.o build/interrupts.cc.o "
 
     if ARCH == "aarch64" then
         lmake_compile("src/hal/aarch64/aarch64_excpt.c")
@@ -59,4 +59,8 @@ function compile_hal()
         lmake_compile("src/hal/aarch64/aarch64_cpu.S src/hal/aarch64/aarch64_excpt.S src/hal/aarch64/aarch64_sysregs.S")
         OBJECT_FILES = OBJECT_FILES .. "build/aarch64_cpu.S.o build/aarch64_excpt.S.o build/aarch64_sysregs.S.o build/aarch64_excpt.c.o "
     end
+end
+
+function clean()
+    lmake_exec("rm build/aarch64_cpu.S.o build/aarch64_excpt.c.o build/boot.S.o build/cstring.cc.o build/interrupts.cc.o build/kernel8.elf build/mini_uart.cc.o build/printf.cc.o build/aarch64_excpt.S.o build/aarch64_sysregs.S.o build/cpu.cc.o build/excpt.cc.o build/kernel.cc.o build/klib.cc.o build/pre_kernel.S.o build/utils.S.o")
 end
