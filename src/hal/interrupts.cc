@@ -49,8 +49,9 @@ namespace intc {
         pair.handler = handler;
         pair.cleaner = cleaner;
 
-        interrupt_handlers[handler_count++] = pair;
-    
+        interrupt_handlers[handler_count] = pair;
+        handler_count++;
+
         mem_put32(id.domain, id.device_number);
     }
 

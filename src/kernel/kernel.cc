@@ -51,11 +51,7 @@ namespace timer {
 		cur_val += interval;
 		mem_put32(TIMER_C1, cur_val);
 		kstd::printf("consfijured closk\r\n");
-	
-
 	}
-
-
 }
 
 extern "C" void kernel_main(void)
@@ -73,7 +69,7 @@ extern "C" void kernel_main(void)
 	kstd::printf("[+] Setting up vector table... \r\n");
 	cpu::excp::vector_table table {
 		.sync_excpt = kstd::func<void(long, long)>::null(),
-		.irq_excpt = intc::generic_irq_handler,
+		.irq_excpt = kstd::func<void(long, long)>(intc::generic_irq_handler),
 		.fiq_excpt = kstd::func<void(long, long)>::null(),
 		.err_excpt = kstd::func<void(long, long)>::null()
 	};
@@ -92,4 +88,6 @@ extern "C" void kernel_main(void)
 		for(int i = 0; i < 0xFFFFF; i++);
 		i++;
 	}
+
+	kstd::printf("[+] Should not be here wtf\r\n");
 }
