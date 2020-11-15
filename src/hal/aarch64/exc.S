@@ -1,19 +1,3 @@
-/*
- * This project is provided under the GNU GPL v2 license, more information can 
- * found on https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- *
- * Authors:
- *    - Iker Galardi
- */
-
 .macro save_registers
 	sub	sp, sp, #256
 	stp	x0, x1, [sp, #16 * 0]
@@ -59,8 +43,8 @@
     b \label
 .endm
 
-.globl arch_setup_vector_regs
-arch_setup_vector_regs:
+.globl setup_vector_reg
+setup_vector_reg:
 	adr x0, vectors
 	msr vbar_el1, x0
 	ret
@@ -93,12 +77,16 @@ invalid_entry:
 
 sync_asm:
     save_registers
+    mrs x0, esr_el1
+    mrs x1, elr_el1
     bl synchronous_exception
     recover_registers
     eret
 
 irq_asm:
     save_registers
+    mrs x0, esr_el1
+    mrs x1, elr_el1
     bl irq_exception
     recover_registers
     eret
@@ -114,12 +102,3 @@ err_asm:
     bl error_exception
     recover_registers
     eret       
-
-.globl arch_enable_irq
-arch_enable_irq:
-    msr daifclr, #2
-    ret
-.globl arch_disable_irq
-arch_disable_irq:
-    msr daifset, #2
-    ret
