@@ -1,0 +1,45 @@
+/*
+ * This project is provided under the GNU GPL v2 license, more information can 
+ * found on https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *
+ * Authors:
+ *    - Iker Galardi
+ */
+
+#include "cpu.hh"
+
+extern "C" {
+    #include "hal/aarch64/aarch64_cpu.h"
+    #include "hal/aarch64/aarch64_sysregs.h"
+}
+
+namespace cpu {
+    int get_thread_id() {
+        return arch_get_thread_id();
+    }
+
+    int get_el() {
+        return arch_get_el();
+    }
+    
+    void switch_user_mode() {
+        arch_switch_to_usermode();
+    }
+
+    long get_sysreg(sysreg reg) {
+        if(reg == sysreg::esr)
+            return arch_sysreg_esr();
+        else if(reg == sysreg::elr)
+            return arch_sysreg_esr();
+
+        return 0;
+    }
+}
