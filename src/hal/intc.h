@@ -14,7 +14,9 @@ typedef struct {
 
 void intc_initialize();
 
-void add_handler(intc_id id, intc_handler handler);
+void intc_add_handler(intc_id id, intc_handler handler, int aff_cpu);
+
+void intc_add_local_handler(intc_id id, intc_handler handler);
 
 #ifdef __cplusplus
 }
