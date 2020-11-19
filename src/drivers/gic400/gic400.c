@@ -31,6 +31,23 @@
 #define GICD_PIDR2      ((volatile unsigned int*)(distr_addr + 0xFE8))
 #define GICD_PIDR3      ((volatile unsigned int*)(distr_addr + 0xFEC))
 
+// CPU interface registers
+#define GICC_CTLR       ((volatile unsigned int*)(icpu_addr + 0x0000))
+#define GICC_PMR        ((volatile unsigned int*)(icpu_addr + 0x0004))
+#define GICC_BPR        ((volatile unsigned int*)(icpu_addr + 0x0008))
+#define GICC_IAR        ((volatile unsigned int*)(icpu_addr + 0x000C))
+#define GICC_EOIR       ((volatile unsigned int*)(icpu_addr + 0x0010))
+#define GICC_RPR        ((volatile unsigned int*)(icpu_addr + 0x0014))
+#define GICC_HPPIR      ((volatile unsigned int*)(icpu_addr + 0x0018))
+#define GICC_ABPR       ((volatile unsigned int*)(icpu_addr + 0x001C))
+#define GICC_AIAR       ((volatile unsigned int*)(icpu_addr + 0x0020))
+#define GICC_AEOIR      ((volatile unsigned int*)(icpu_addr + 0x0024))
+#define GICC_AHPPIR     ((volatile unsigned int*)(icpu_addr + 0x0028))
+#define GICC_APR0       ((volatile unsigned int*)(icpu_addr + 0x00D0))
+#define GICC_NSAPR0     ((volatile unsigned int*)(icpu_addr + 0x00E0))
+#define GICC_IIDR       ((volatile unsigned int*)(icpu_addr + 0x00FC))
+#define GICC_DIR        ((volatile unsigned int*)(icpu_addr + 0x1000))
+
 static unsigned long distr_addr;
 static unsigned long icpu_addr;
 
