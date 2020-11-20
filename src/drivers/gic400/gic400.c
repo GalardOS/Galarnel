@@ -51,8 +51,6 @@
 static unsigned long distr_addr = 0;
 static unsigned long icpu_addr = 0;
 
-static int initialized = 0;
-
 void gic400_initialize(unsigned long base_addr) {
     // Setup the register addresses 
     distr_addr = base_addr + 0x1000;

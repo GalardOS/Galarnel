@@ -23,6 +23,13 @@ void gic400_initialize(unsigned long base_addr);
  */
 void gic400_initialize_cpu_iface();
 
+/*
+ * Returns the number of available interrupts lines.
+ * 
+ * @return: number of available lines
+ */
+int gic400_available_line_count();
+
 int gic400_get_cpuid();
 
 #ifdef __cplusplus
