@@ -48,14 +48,15 @@
 #define GICC_IIDR       ((volatile unsigned int*)(icpu_addr + 0x00FC))
 #define GICC_DIR        ((volatile unsigned int*)(icpu_addr + 0x1000))
 
-static unsigned long distr_addr;
-static unsigned long icpu_addr;
+static unsigned long distr_addr = 0;
+static unsigned long icpu_addr = 0;
+
+static int initialized = 0;
 
 void gic400_initialize(unsigned long base_addr) {
     // Setup the register addresses 
     distr_addr = base_addr + 0x1000;
     icpu_addr = base_addr + 0x2000; 
-
 
     // Disable irq controller 
     *GICD_CTLR = 0;
@@ -64,4 +65,9 @@ void gic400_initialize(unsigned long base_addr) {
 
     // Enable irq controller 
     *GICD_CTLR = 1;
+}
+
+int gic400_available_line_count() {
+
+    return 0;
 }
