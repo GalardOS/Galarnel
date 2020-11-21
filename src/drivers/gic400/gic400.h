@@ -38,7 +38,7 @@ void gic400_disable_interrupts();
  * 
  * @return: number of available lines
  */
-int gic400_available_line_count();
+unsigned int gic400_available_line_count();
 
 /*
  * Gets the cpuid of the core accessing registers.

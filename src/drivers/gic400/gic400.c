@@ -59,7 +59,14 @@ void gic400_initialize(unsigned long base_addr) {
     // Disable irq controller 
     *GICD_CTLR = 0;
 
-    // TODO: initialize
+    // Clear all the interrupts
+    unsigned int n_lines = gic400_available_line_count();
+    for(int i = 0; i < n_lines; i++) {
+        GICD_ICENABLER[i] = 0xFFFFFFFF;
+    }
+
+    // Reset all the priorities
+    
 
     // Enable irq controller 
     *GICD_CTLR = 1;
@@ -77,7 +84,7 @@ void gic400_initialize_cpu_iface() {
 
 }
 
-int gic400_available_line_count() {
+unsigned int gic400_available_line_count() {
     // Get the first 4 bits of the TYPER register
     return *GICD_TYPER & 0xF + 1;
 }
