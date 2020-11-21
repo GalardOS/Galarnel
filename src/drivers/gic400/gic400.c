@@ -65,7 +65,27 @@ void gic400_initialize(unsigned long base_addr) {
     *GICD_CTLR = 1;
 }
 
-int gic400_available_line_count() {
+void gic400_enable_interrupts() {
+    *GICD_CTLR = 1;
+}
 
-    return 0;
+void gic400_disable_interrupts() {
+    *GICD_CTLR = 0;
+}
+
+void gic400_initialize_cpu_iface() {
+
+}
+
+int gic400_available_line_count() {
+    // Get the first 4 bits of the TYPER register
+    return *GICD_TYPER & 0xF + 1;
+}
+
+int gic400_get_cpuid() {
+    // CPUID saved on bits [5:7]
+    int cpuid = *GICD_TYPER;
+    cpuid = cpuid >> 4;
+    cpuid = cpuid & 0x3;
+    return cpuid;
 }
