@@ -66,10 +66,6 @@ void gic400_initialize(unsigned long base_addr) {
     }
 
     // Reset all the priorities
-    
-
-    // Enable irq controller 
-    *GICD_CTLR = 1;
 }
 
 void gic400_enable_interrupts() {
@@ -78,6 +74,15 @@ void gic400_enable_interrupts() {
 
 void gic400_disable_interrupts() {
     *GICD_CTLR = 0;
+}
+    
+void gic400_set_interrupt_mode(unsigned char mode) {
+    // Ends on 29 because the configuration addresses
+    // start at 0xC08 to 0xC7C, range [0:116], dividing 
+    // by 4 (size of uint in bytes) gives that 29 magic 
+    // number.
+    for(int i = 0; i < 29; i++)
+        *GICD_ICFGR_SPI = mode;
 }
 
 void gic400_initialize_cpu_iface() {
