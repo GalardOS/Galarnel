@@ -55,6 +55,8 @@ void gic400_enable_interrupts();
  */
 void gic400_disable_interrupts();
 
+void gic400_enable_interrupt(unsigned int line, unsigned int id);
+
 /*
  * Set the interrupt mode for a given processor
  */
