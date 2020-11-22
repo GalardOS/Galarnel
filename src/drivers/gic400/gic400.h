@@ -55,6 +55,9 @@ void gic400_enable_interrupts();
  */
 void gic400_disable_interrupts();
 
+/*
+ * Set the interrupt mode for a given processor
+ */
 void gic400_set_interrupt_mode(unsigned char mode);
 
 /*
@@ -67,11 +70,6 @@ void gic400_set_priority();
  * is the processor or processors to be affected.
  */
 void gic400_set_target();
-
-/*
- * Set the interrupt mode for a given processor
- */
-void gic400_set_interrupt_mode();
 
 /*
  * Forwards an SGI to another processor. An SGI is a software
