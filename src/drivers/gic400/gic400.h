@@ -126,7 +126,7 @@ void gic400_iface_set_preemption_policy(unsigned int preemption_policy);
  * 
  * @return: number of available lines
  */
-unsigned int gic400_available_line_count();
+uint32 gic400_available_line_count();
 
 /*
  * Gets the cpuid of the processor accessing registers.
