@@ -11,7 +11,7 @@
 #define GICD_ICPENDR    ((volatile unsigned int*)(distr_addr + 0x280))
 #define GICD_ISACTIVER  ((volatile unsigned int*)(distr_addr + 0x300)) 
 #define GICD_ICACTIVER  ((volatile unsigned int*)(distr_addr + 0x380))
-#define GICD_IPRIORITYR ((volatile unsigned int*)(distr_addr + 0x400))
+#define GICD_IPRIORITYR ((volatile unsigned char*)(distr_addr + 0x400))
 #define GICD_ITARGETSR  ((volatile unsigned int*)(distr_addr + 0x800))
 #define GICD_ITARGETSRW ((volatile unsigned int*)(distr_addr + 0x820))
 #define GICD_ICFGR_SGI  ((volatile unsigned int*)(distr_addr + 0xC00))
@@ -59,13 +59,17 @@ void gic400_initialize(unsigned long base_addr) {
     // Disable irq controller 
     *GICD_CTLR = 0;
 
-    // Clear all the interrupts
+    // Disable and clear all pending interrupts
     unsigned int n_lines = gic400_available_line_count();
-    for(int i = 0; i < n_lines; i++) {
+    for(int i = 0; i < n_lines; i += 32) {
         GICD_ICENABLER[i] = 0xFFFFFFFF;
+        GICD_ICPENDR[i] = 0xFFFFFFFF;
     }
 
     // Reset all the priorities
+    for(int i = 0; i < n_lines; i++) {
+        GICD_IPRIORITYR[i] = 0;
+    }
 }
 
 void gic400_enable_interrupts() {
@@ -75,7 +79,7 @@ void gic400_enable_interrupts() {
 void gic400_disable_interrupts() {
     *GICD_CTLR = 0;
 }
-    
+
 void gic400_set_interrupt_mode(unsigned char mode) {
     // Ends on 29 because the configuration addresses
     // start at 0xC08 to 0xC7C, range [0:116], dividing 
@@ -91,7 +95,7 @@ void gic400_initialize_cpu_iface() {
 
 unsigned int gic400_available_line_count() {
     // Get the first 4 bits of the TYPER register
-    return *GICD_TYPER & 0xF + 1;
+    return 32 * (*GICD_TYPER & 0x1f + 1);
 }
 
 int gic400_get_cpuid() {

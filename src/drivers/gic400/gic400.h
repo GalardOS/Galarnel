@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+#include "common.h"
+
 /*
  * This driver is divided into two different set of functions:
  * the distributor (those with prefix gic400_) and the CPU 
@@ -22,10 +24,6 @@ extern "C" {
 #define GIC400_INT_MODEL_1N 1
 #define GIC400_INT_MODEL_NN 0
 
-#define GIC400_SGI 0
-#define GIC400_SPI 1
-#define GIC400_PPI 2
-
 /*
  * Initializes the gic-400 interrupt controller by 
  * setting up all the register addresses and cleaning 
@@ -34,7 +32,6 @@ extern "C" {
  * @param base_addr: base address of the gic400 registers
  */
 void gic400_initialize(unsigned long base_addr);
-
 
 /*
  * Sets up the CPU interface of the interrupt controller
@@ -55,7 +52,7 @@ void gic400_enable_interrupts();
  */
 void gic400_disable_interrupts();
 
-void gic400_enable_interrupt(unsigned int line, unsigned int id);
+void gic400_enable_interrupt(uint32 id);
 
 /*
  * Set the interrupt mode for a given processor
