@@ -11,7 +11,7 @@
 #define GICD_ICPENDR    ((volatile unsigned int*)(distr_addr + 0x280))
 #define GICD_ISACTIVER  ((volatile unsigned int*)(distr_addr + 0x300)) 
 #define GICD_ICACTIVER  ((volatile unsigned int*)(distr_addr + 0x380))
-#define GICD_IPRIORITYR ((volatile unsigned char*)(distr_addr + 0x400))
+#define GICD_IPRIORITYR ((volatile unsigned int*)(distr_addr + 0x400))
 #define GICD_ITARGETSR  ((volatile unsigned int*)(distr_addr + 0x800))
 #define GICD_ITARGETSRW ((volatile unsigned int*)(distr_addr + 0x820))
 #define GICD_ICFGR_SGI  ((volatile unsigned int*)(distr_addr + 0xC00))
@@ -66,8 +66,10 @@ void gic400_initialize(unsigned long base_addr) {
         GICD_ICPENDR[i] = 0xFFFFFFFF;
     }
 
-    // Reset all the priorities
-    for(int i = 0; i < n_lines; i++) {
+    // The first 8 are reserved banks for the eight supported 
+    // cpus. n_lines / 4 + 1 condition deduced from sel4 driver
+    // implementation.
+    for(int i = 8; i < n_lines / 4 + 1; i++) {
         GICD_IPRIORITYR[i] = 0;
     }
 }
