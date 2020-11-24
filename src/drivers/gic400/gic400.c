@@ -136,6 +136,33 @@ void gic400_set_priority(uint32 id, byte priority) {
     }
 }
 
+void gic400_set_target(uint32 irq_id, byte cpu_id) {
+    uint16 bank = irq_id / 4;
+    uint32 register_offset = irq_id % 4;
+
+    switch(register_offset) {
+        // register offset 0 => bits [0:7]
+        case 0:
+            GICD_IPRIORITYR[bank] = cpu_id;
+            break;
+
+        // register offset 1 => bits [8:15]
+        case 1:
+            GICD_IPRIORITYR[bank] = cpu_id << 8;
+            break;
+
+        // register offset 2 => bits [16:23]
+        case 2:
+            GICD_IPRIORITYR[bank] = cpu_id << 16;
+            break;
+        
+        // register offset 3 => bits [24:31]
+        case 3:
+            GICD_IPRIORITYR[bank] = cpu_id << 24;
+            break;
+    }
+}
+
 unsigned int gic400_available_line_count() {
     // Get the first 4 bits of the TYPER register
     return 32 * (*GICD_TYPER & 0x1f + 1);
