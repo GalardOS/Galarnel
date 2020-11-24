@@ -168,19 +168,29 @@ uint32 gic400_available_line_count() {
 }
 
 int gic400_get_cpuid() {
+    /*
+     * As there is not any direct way to query the CPUID
+     * for the GIC, we rely on the PPI that contain the 
+     * current CPU as the target.
+     * 
+     * Based on https://github.com/seL4/seL4/blob/master/src/arch/arm/machine/gic_v2.c
+     */
+    
     uint32 n_lines = gic400_available_line_count();
-    uint32_t target = 0;
-    for (uint32 i = 0; i < n_lines; i += 4) {
-        target = [i >> 2];
+    uint32 target = 0;
+
+    for (uint32 i = 0; i < n_lines / 4; i++) {
+        target = GICD_ITARGETSR[i];
         target |= target >> 16;
         target |= target >> 8;
         if (target) {
             break;
         }
     }
+   
     if (!target) {
-        printf("Warning: Could not infer GIC interrupt target ID, assuming 0.\n");
         target = BIT(0);
     }
+    
     return target & 0xff; 
 }
