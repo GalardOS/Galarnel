@@ -24,6 +24,16 @@ extern "C" {
 #define GIC400_INT_MODEL_1N 1
 #define GIC400_INT_MODEL_NN 0
 
+#define GIC400_CPU0   BIT(0)
+#define GIC400_CPU1   BIT(1)
+#define GIC400_CPU2   BIT(2)
+#define GIC400_CPU3   BIT(3)
+#define GIC400_CPU4   BIT(4)
+#define GIC400_CPU5   BIT(5)
+#define GIC400_CPU6   BIT(6)
+#define GIC400_CPU7   BIT(7)
+#define GIC400_CPUALL 0b11111111
+
 /*
  * Initializes the gic-400 interrupt controller by 
  * setting up all the register addresses and cleaning 
@@ -52,23 +62,37 @@ void gic400_enable_interrupts();
  */
 void gic400_disable_interrupts();
 
+/*
+ * Enables interrupt routing of peripheral associated to 
+ * specified id
+ * 
+ * @param id: id of the peripheral
+ */
 void gic400_enable_interrupt(uint32 id);
 
 /*
- * Set the interrupt mode for a given processor
+ * Set the interrupt mode for a given processor.
+ * 
+ * @param mode: mode to set the interrupts
+ *        options: 
+ *            -GIC400_INT_MODEL_1N
+ *            -GIC400_INT_MODEL_NN
  */
 void gic400_set_interrupt_mode(unsigned char mode);
 
 /*
  * Sets the interrupt priority for peripheral.
  */
-void gic400_set_priority();
+void gic400_set_priority(uint32 id, byte priority);
 
 /*
  * Sets the target of an interrupt. The target of an interrupt
  * is the processor or processors to be affected.
+ * 
+ * @param irq_id: id of the interrupt
+ * @param cpu_id: id of the target cpu
  */
-void gic400_set_target();
+void gic400_set_target(uint32 irq_id, byte cpu_id);
 
 /*
  * Forwards an SGI to another processor. An SGI is a software
@@ -76,10 +100,10 @@ void gic400_set_target();
  * 
  * @param target: processor to be affected by SGI
  */
-void gic400_forward_sgi(unsigned char target);
+void gic400_forward_sgi(byte target);
 
 /*
- * 
+ * Enable signaling to this CPU.
  */
 void gic400_iface_enable_signaling();
 
