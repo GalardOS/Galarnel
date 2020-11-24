@@ -86,15 +86,6 @@ void gic400_disable_interrupts() {
     *GICD_CTLR = 0;
 }
 
-void gic400_set_interrupt_mode(unsigned char mode) {
-    // Ends on 29 because the configuration addresses
-    // start at 0xC08 to 0xC7C, range [0:116], dividing 
-    // by 4 (size of uint in bytes) gives that 29 magic 
-    // number.
-    for(int i = 0; i < 29; i++)
-        *GICD_ICFGR_SPI = mode;
-}
-
 void gic400_enable_interrupt(uint32 id) {
     uint16 bank = id / 32;
     uint32 peripheral = BIT(id % 32);
@@ -107,6 +98,42 @@ void gic400_disable_interrupt(uint32 id) {
     uint32 peripheral = BIT(id % 32);
 
     GICD_ICENABLER[bank] |= peripheral;   
+}
+
+void gic400_set_interrupt_mode(unsigned char mode) {
+    // Ends on 29 because the configuration addresses
+    // start at 0xC08 to 0xC7C, range [0:116], dividing 
+    // by 4 (size of uint in bytes) gives that 29 magic 
+    // number.
+    for(int i = 0; i < 29; i++)
+        *GICD_ICFGR_SPI = mode;
+}
+
+void gic400_set_priority(uint32 id, byte priority) {
+    uint16 bank = id / 4;
+    uint32 register_offset = id % 4;
+
+    switch(register_offset) {
+        // register offset 0 => bits [0:7]
+        case 0:
+            GICD_IPRIORITYR[bank] = priority;
+            break;
+
+        // register offset 1 => bits [8:15]
+        case 1:
+            GICD_IPRIORITYR[bank] = priority << 8;
+            break;
+
+        // register offset 2 => bits [16:23]
+        case 2:
+            GICD_IPRIORITYR[bank] = priority << 16;
+            break;
+        
+        // register offset 3 => bits [24:31]
+        case 3:
+            GICD_IPRIORITYR[bank] = priority << 24;
+            break;
+    }
 }
 
 unsigned int gic400_available_line_count() {
