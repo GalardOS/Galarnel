@@ -61,7 +61,7 @@ void gic400_initialize(unsigned long base_addr) {
 
     // Disable and clear all pending interrupts
     unsigned int n_lines = gic400_available_line_count();
-    for(int i = 0; i < n_lines; i += 32) {
+    for(int i = 0; i < n_lines / 32; i++) {
         GICD_ICENABLER[i] = 0xFFFFFFFF;
         GICD_ICPENDR[i] = 0xFFFFFFFF;
     }
