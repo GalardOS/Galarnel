@@ -13,7 +13,6 @@
 #define GICD_ICACTIVER  ((volatile unsigned int*)(distr_addr + 0x380))
 #define GICD_IPRIORITYR ((volatile unsigned int*)(distr_addr + 0x400))
 #define GICD_ITARGETSR  ((volatile unsigned int*)(distr_addr + 0x800))
-#define GICD_ITARGETSRW ((volatile unsigned int*)(distr_addr + 0x820))
 #define GICD_ICFGR_SGI  ((volatile unsigned int*)(distr_addr + 0xC00))
 #define GICD_ICFGR_PPI  ((volatile unsigned int*)(distr_addr + 0xC04))
 #define GICD_ICFGR_SPI  ((volatile unsigned int*)(distr_addr + 0xC08))
@@ -143,35 +142,45 @@ void gic400_set_target(uint32 irq_id, byte cpu_id) {
     switch(register_offset) {
         // register offset 0 => bits [0:7]
         case 0:
-            GICD_IPRIORITYR[bank] = cpu_id;
+            GICD_ITARGETSR[bank] = cpu_id;
             break;
 
         // register offset 1 => bits [8:15]
         case 1:
-            GICD_IPRIORITYR[bank] = cpu_id << 8;
+            GICD_ITARGETSR[bank] = cpu_id << 8;
             break;
 
         // register offset 2 => bits [16:23]
         case 2:
-            GICD_IPRIORITYR[bank] = cpu_id << 16;
+            GICD_ITARGETSR[bank] = cpu_id << 16;
             break;
         
         // register offset 3 => bits [24:31]
         case 3:
-            GICD_IPRIORITYR[bank] = cpu_id << 24;
+            GICD_ITARGETSR[bank] = cpu_id << 24;
             break;
     }
 }
 
-unsigned int gic400_available_line_count() {
+uint32 gic400_available_line_count() {
     // Get the first 4 bits of the TYPER register
     return 32 * (*GICD_TYPER & 0x1f + 1);
 }
 
 int gic400_get_cpuid() {
-    // CPUID saved on bits [5:7]
-    int cpuid = *GICD_TYPER;
-    cpuid = cpuid >> 4;
-    cpuid = cpuid & 0x3;
-    return cpuid;
+    uint32 n_lines = gic400_available_line_count();
+    uint32_t target = 0;
+    for (uint32 i = 0; i < n_lines; i += 4) {
+        target = [i >> 2];
+        target |= target >> 16;
+        target |= target >> 8;
+        if (target) {
+            break;
+        }
+    }
+    if (!target) {
+        printf("Warning: Could not infer GIC interrupt target ID, assuming 0.\n");
+        target = BIT(0);
+    }
+    return target & 0xff; 
 }
