@@ -69,9 +69,13 @@ void gic400_initialize(unsigned long base_addr) {
     // The first 8 are reserved banks for the eight supported 
     // cpus. n_lines / 4 + 1 condition deduced from sel4 driver
     // implementation.
-    for(int i = 8; i < n_lines / 4 + 1; i++) {
+    for(int i = 8; i < n_lines / 4; i++) {
         GICD_IPRIORITYR[i] = 0;
     }
+}
+
+void gic400_initialize_cpu_iface() {
+
 }
 
 void gic400_enable_interrupts() {
@@ -91,8 +95,18 @@ void gic400_set_interrupt_mode(unsigned char mode) {
         *GICD_ICFGR_SPI = mode;
 }
 
-void gic400_initialize_cpu_iface() {
+void gic400_enable_interrupt(uint32 id) {
+    uint16 bank = id / 32;
+    uint32 peripheral = BIT(id % 32);
 
+    GICD_ISENABLER[bank] |= peripheral;
+}
+
+void gic400_disable_interrupt(uint32 id) {
+    uint16 bank = id / 32;
+    uint32 peripheral = BIT(id % 32);
+
+    GICD_ICENABLER[bank] |= peripheral;   
 }
 
 unsigned int gic400_available_line_count() {

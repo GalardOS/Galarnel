@@ -71,6 +71,14 @@ void gic400_disable_interrupts();
 void gic400_enable_interrupt(uint32 id);
 
 /*
+ * Disables interrupt routing of peripheral associated to 
+ * specified id
+ * 
+ * @param id: id of the peripheral
+ */
+void gic400_disable_interrupt(uint32 id);
+
+/*
  * Set the interrupt mode for a given processor.
  * 
  * @param mode: mode to set the interrupts
