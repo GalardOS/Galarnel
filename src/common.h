@@ -15,4 +15,8 @@ typedef long           int64;
 
 #define BIT(x) (1 << (x))
 
+typedef uint8 bool;
+#define true  1
+#define false 0
+
 #endif // COMMON_H
