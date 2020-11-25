@@ -3,7 +3,7 @@
 
 #define GIC400_BCM2711_BASEADDR 0x4C0040000
 
-int interrupt_controller_initialized = 0;
+int interrupt_controller_initialized = false;
 
 void intc_initialize() {
     if(!interrupt_controller_initialized) {
@@ -14,7 +14,7 @@ void intc_initialize() {
     gic400_enable_interrupts();
 }
 
-void intc_add_handler(intc_id id, intc_handler handler, int aff_cpu) {
+void intc_add_handler(intc_id id, intc_handler handler, uint8 aff_cpu) {
     gic400_enable_interrupt(id);
     gic400_set_target(id, GIC400_CPUALL);            // Set all CPU as targets
 }
