@@ -99,7 +99,7 @@ void gic400_disable_interrupt(uint32 id) {
     GICD_ICENABLER[bank] |= peripheral;   
 }
 
-void gic400_set_interrupt_mode(unsigned char mode) {
+void gic400_set_interrupt_mode(byte mode) {
     // Ends on 29 because the configuration addresses
     // start at 0xC08 to 0xC7C, range [0:116], dividing 
     // by 4 (size of uint in bytes) gives that 29 magic 
@@ -108,7 +108,7 @@ void gic400_set_interrupt_mode(unsigned char mode) {
         *GICD_ICFGR_SPI = mode;
 }
 
-void gic400_set_priority(uint32 id, byte priority) {
+void gic400_set_priority(uint32 id, uint8 priority) {
     uint16 bank = id / 4;
     uint32 register_offset = id % 4;
 
@@ -135,7 +135,7 @@ void gic400_set_priority(uint32 id, byte priority) {
     }
 }
 
-void gic400_set_target(uint32 irq_id, byte cpu_id) {
+void gic400_set_target(uint32 irq_id, uint8 cpu_id) {
     uint16 bank = irq_id / 4;
     uint32 register_offset = irq_id % 4;
 
@@ -167,7 +167,7 @@ uint32 gic400_available_line_count() {
     return 32 * (*GICD_TYPER & 0x1f + 1);
 }
 
-int gic400_get_cpuid() {
+uint8 gic400_get_cpuid() {
     /*
      * As there is not any direct way to query the CPUID
      * for the GIC, we rely on the PPI that contain the 

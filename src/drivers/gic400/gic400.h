@@ -86,12 +86,12 @@ void gic400_disable_interrupt(uint32 id);
  *            -GIC400_INT_MODEL_1N
  *            -GIC400_INT_MODEL_NN
  */
-void gic400_set_interrupt_mode(unsigned char mode);
+void gic400_set_interrupt_mode(byte mode);
 
 /*
  * Sets the interrupt priority for peripheral.
  */
-void gic400_set_priority(uint32 id, byte priority);
+void gic400_set_priority(uint32 id, uint8 priority);
 
 /*
  * Sets the target of an interrupt. The target of an interrupt
@@ -100,7 +100,7 @@ void gic400_set_priority(uint32 id, byte priority);
  * @param irq_id: id of the interrupt
  * @param cpu_id: id of the target cpu
  */
-void gic400_set_target(uint32 irq_id, byte cpu_id);
+void gic400_set_target(uint32 irq_id, uint8 cpu_id);
 
 /*
  * Forwards an SGI to another processor. An SGI is a software
@@ -133,7 +133,7 @@ uint32 gic400_available_line_count();
  * 
  * @return: cpuid of the processor
  */
-int gic400_get_cpuid();
+uint8 gic400_get_cpuid();
 
 #ifdef __cplusplus
 }
