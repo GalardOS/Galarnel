@@ -15,10 +15,7 @@ extern "C" {
 
 typedef void(*intc_handler)(void);
 
-typedef struct {
-    unsigned int domain;
-    unsigned int device_id;
-} intc_id;
+typedef uint32 intc_id;
 
 void intc_initialize();
 

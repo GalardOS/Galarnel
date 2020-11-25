@@ -13,4 +13,6 @@ typedef short          int16;
 typedef int            int32;
 typedef long           int64;
 
+#define BIT(x) (1 << (x))
+
 #endif // COMMON_H

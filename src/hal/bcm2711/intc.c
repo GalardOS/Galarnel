@@ -15,12 +15,12 @@ void intc_initialize() {
 }
 
 void intc_add_handler(intc_id id, intc_handler handler, int aff_cpu) {
-    gic400_enable_interrupt(id.domain, id.device_id);
-    gic400_set_target();            // Set all CPU as targets
+    gic400_enable_interrupt(id);
+    gic400_set_target(id, GIC400_CPUALL);            // Set all CPU as targets
 }
 
 void intc_add_local_handler(intc_id id, intc_handler handler) {
-    unsigned char cpuid = gic400_get_cpuid();
-    gic400_enable_interrupt(id.domain, id.device_id);
-    gic400_set_target();            // Set this cpu as target
+    byte cpuid = gic400_get_cpuid();
+    gic400_enable_interrupt(id);
+    gic400_set_target(id, cpuid);            // Set this cpu as target
 }
