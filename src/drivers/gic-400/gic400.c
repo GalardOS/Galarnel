@@ -1,4 +1,4 @@
-#include "drivers/gic400/gic400.h"
+#include "drivers/gic-400/gic400.h"
 
 // Distributor registers
 #define GICD_CTLR       ((volatile unsigned int*)(distr_addr + 0x000))
