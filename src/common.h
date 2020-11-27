@@ -19,4 +19,6 @@ typedef uint8 bool;
 #define true  1
 #define false 0
 
+#define ON_RANGE(x, rangemin, rangemax) x >= rangemax && x <= rangemin
+
 #endif // COMMON_H

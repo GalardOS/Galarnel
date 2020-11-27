@@ -7,7 +7,9 @@ extern "C" {
 
 void console_initialize();
 
-void console_write(char character);
+void console_writechar(char character);
+
+void console_writestring(char* string);
 
 #ifdef __cplusplus
 }
