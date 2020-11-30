@@ -47,7 +47,7 @@ void bcm2711gpio_initialize(long base_address) {
     gpio_base_addr = base_address;
 }
 
-void bcm277gpio_set_pin_mode(uint8 pin, uint32 mode) {
+void bcm2771gpio_set_pin_mode(uint8 pin, uint32 mode) {
     // Selector to activate the mode of the pin
     int selector = mode << (pin % 10);
 
