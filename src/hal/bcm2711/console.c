@@ -14,6 +14,8 @@ void console_initialize() {
     // Configure gpio to redirect uart to pins 14 and 15
     bcm2771gpio_set_pin_mode(14, GPIO_ALT_FUNC0);
     bcm2771gpio_set_pin_mode(15, GPIO_ALT_FUNC0);
+    bcm2771gpio_set_resistor_mode(14, GPIO_PULL_DONW_RESISTOR);
+    bcm2771gpio_set_resistor_mode(15, GPIO_PULL_DONW_RESISTOR);
     /// TODO: setup clocks
 
     bcm2835auxuart_initialize(UART_BASE_ADDRESS);
