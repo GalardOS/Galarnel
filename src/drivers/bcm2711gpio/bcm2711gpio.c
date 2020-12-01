@@ -66,3 +66,17 @@ void bcm2771gpio_set_pin_mode(uint8 pin, uint32 mode) {
         *GPFSEL0 |= selector;
     }
 }
+
+void bcm2771gpio_set_resistor_mode(uint8 pin, uint32 mode) {
+    uint32 selector = mode << ((pin % 16) * 2);
+    
+    if(ON_RANGE(pin, 0, 15)) {
+        *GPIO_PUP_PDN_CNTRL_REG0 = selector;
+    } else if(ON_RANGE(pin, 16, 31)) {
+        *GPIO_PUP_PDN_CNTRL_REG1 = selector;
+    } else if(ON_RANGE(pin, 32, 47)) {
+        *GPIO_PUP_PDN_CNTRL_REG2 = selector;
+    } else if(ON_RANGE(pin, 48, 57)) {
+        *GPIO_PUP_PDN_CNTRL_REG3 = selector;
+    }
+}

@@ -16,9 +16,15 @@ extern "C" {
 #define GPIO_ALT_FUNC4  0b011
 #define GPIO_ALT_FUNC5  0b010
 
+#define GPIO_NO_RESISTOR        0b00
+#define GPIO_PULL_UP_RESISTOR   0b01
+#define GPIO_PULL_DONW_RESISTOR 0b10
+
 void bcm2711gpio_initialize(long base_address);
 
 void bcm2771gpio_set_pin_mode(uint8 pin, uint32 mode);
+
+void bcm2771gpio_set_resistor_mode(uint8 pin, uint32 mode);
 
 #ifdef __cplusplus
 }
