@@ -2,8 +2,26 @@
 --      * bcm2711
 CONFIGURATION_PLATFORM = "bcm2711"
 
+CONFIGURATION_COMPILER = "clang"
+CONFIGURATION_LINKER = "ld.lld" 
+
 -- Include the platform configuration
 lmake_include("build/configs/" .. CONFIGURATION_PLATFORM .. ".lua")
+
+-- Set the target for the compiler and linker
+if CONFIGURATION_ISA == "aarch64" then
+    COMPILER_TARGET = "--target=aarch64"
+    LINKER_TARGET = "-m aarch64elf"
+else
+    lmake_error("Unkown ISA")
+end
+
+-- Construct the compiler flags
+CXX_COMPILER_FLAGS = COMPILER_TARGET .. " -Wall -nostdlib -ffreestanding -Isrc -Isrc/klib -Isrc/kernel -mgeneral-regs-only"
+ASM_COMPILER_FLAGS = COMPILER_TARGET .. " -Isrc"
+
+-- Construct the linker flags
+LINKER_FLAGS = LINKER_TARGET .. " -T linker/linker.ld"
 
 -- Variables to be used in lmake.lua for compiling and linking
 C_SOURCE_FILES = ""
