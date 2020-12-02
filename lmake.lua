@@ -1,6 +1,6 @@
 lmake_compatibility_version(1)
 
-lmake_include("build/config")
+lmake_include("build/config.lua")
 
 function build()
     -- Compiler C and C++ files
