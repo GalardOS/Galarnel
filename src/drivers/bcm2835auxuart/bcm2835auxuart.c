@@ -45,7 +45,11 @@ void bcm2835auxuart_initialize(void* base_address) {
 }
 
 void bcm2835auxuart_send_byte(byte data) {
+    // Wait until data can be sent 
+    while(!(*AUX_MU_LSR_REG & BIT(0)));
     
+    // Send data
+    *AUX_MU_IO_REG = data;
 }
 
 byte bcm2835auxuart_read_byte() {
