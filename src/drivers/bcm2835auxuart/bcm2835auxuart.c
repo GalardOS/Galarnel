@@ -1,4 +1,4 @@
-#include "drivers/bcm2835-aux-uart/bcm2835auxuart.h"
+#include "drivers/bcm2835auxuart/bcm2835auxuart.h"
 
 /// TODO: base_addr be relative to base of uart and not to base MMIO address
 #define AUX_ENABLES     ((volatile uint32*)(base_addr + 0x00215004))
@@ -19,11 +19,33 @@ static unsigned long base_addr = 0;
 void bcm2835auxuart_initialize(void* base_address) {
     base_addr = base_address;
 
+    // Enable the UART
+    *AUX_ENABLES = 1;
 
+    // Disable the interrupts (and other things)
+    *AUX_MU_IER_REG = 0; 
+
+    // Disable Receiver and transmitter, flow control etc
+    *AUX_MU_CNTL_REG = 0;
+
+    // Enable 8 bit mode
+    *AUX_MU_LCR_REG = BIT(0);
+
+    // Set RTS line to always high
+    *AUX_MU_MCR_REG = 0;
+
+    // Enable baud rate access bit 7 is set to 1
+    *AUX_MU_IER_REG = BIT(7);
+
+    // Set baud rate to 115200
+    *AUX_MU_BAUD_REG = 270;
+
+    // Enable transmitter and receiver
+    *AUX_MU_CNTL_REG = BIT(0) | BIT(1);
 }
 
 void bcm2835auxuart_send_byte(byte data) {
-
+    
 }
 
 byte bcm2835auxuart_read_byte() {
