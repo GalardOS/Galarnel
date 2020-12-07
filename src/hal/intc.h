@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+#include "common.h"
+
 #define INTC_ALL_CPU 7fffffff
 
 #define INTC_DOMAIN_0 0

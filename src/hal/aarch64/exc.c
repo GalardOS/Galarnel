@@ -1,4 +1,4 @@
-#include "exc.h"
+#include "hal/exc.h"
 
 static exc_vector_table current_table;
 

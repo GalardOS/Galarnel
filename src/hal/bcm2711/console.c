@@ -2,8 +2,8 @@
 
 #include "hal/bcm2711/constants.h"
 
-#include "bcm2835auxuart/bcm2835auxuart.h"
-#include "bcm2711gpio/bcm2711gpio.h"
+#include "drivers/bcm2835auxuart/bcm2835auxuart.h"
+#include "drivers/bcm2711gpio/bcm2711gpio.h"
 
 #define UART_BASE_ADDRESS MMIO_BASE + 0x00215004
 #define GPIO_BASE_ADDRESS 27

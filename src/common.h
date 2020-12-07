@@ -15,9 +15,11 @@ typedef long           int64;
 
 #define BIT(x) (1 << (x))
 
+#ifndef __cplusplus
 typedef uint8 bool;
 #define true  1
 #define false 0
+#endif
 
 #define ON_RANGE(x, rangemin, rangemax) x >= rangemax && x <= rangemin
 

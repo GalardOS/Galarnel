@@ -15,13 +15,12 @@
  */
 
 #include "klib.hh"
-
-#include "mini_uart.hh"
+#include "hal/console.h"
 
 // Necesary for printf
 void putc(void* p, char c) 
 { 
-    muart::send_char(c);  
+    console_writechar(c);
 }
 
 namespace kstd

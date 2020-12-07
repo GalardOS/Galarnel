@@ -1,5 +1,5 @@
 #include "hal/intc.h"
-#include "drivers/gic-400/gic400.h"
+#include "drivers/gic400/gic400.h"
 
 #define GIC400_BCM2711_BASEADDR 0x4C0040000
 
