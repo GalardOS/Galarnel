@@ -14,8 +14,6 @@ if ARCH == "aarch64" then
     LLD_TARGET = "-m aarch64elf "
 end
 
-OBJECT_FILES = ""
-
 function build()
     c_cc_files = lmake_find("src/**.c") .. lmake_find("src/**.cc")
     asm_files = lmake_find("src/**.S")

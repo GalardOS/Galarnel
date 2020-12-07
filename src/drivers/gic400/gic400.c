@@ -73,7 +73,7 @@ void gic400_initialize(unsigned long base_addr) {
     }
 }
 
-void gic400_initialize_cpu_iface() {
+void gic400_iface_initialize() {
 
 }
 
@@ -193,4 +193,8 @@ uint8 gic400_get_cpuid() {
     }
     
     return target & 0xff; 
+}
+
+void gic400_iface_enable_signaling() {
+
 }
