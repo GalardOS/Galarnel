@@ -33,7 +33,7 @@ function build()
     lmake_set_linker_out("build/kernel.elf")
     lmake_link(obj_files)
 
-    -- TODO: Create the .img bootable file
+    lmake_exec("aarch64-linux-gnu-objcopy build/kernel.elf -O binary kernel8.img")
 end
 
 function clean()
