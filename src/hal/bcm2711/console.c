@@ -5,11 +5,8 @@
 #include "drivers/bcm2835auxuart/bcm2835auxuart.h"
 #include "drivers/bcm2711gpio/bcm2711gpio.h"
 
-#define UART_BASE_ADDRESS MMIO_BASE + 0x00215004
-#define GPIO_BASE_ADDRESS 27
-
 void console_initialize() {
-    bcm2711gpio_initialize(GPIO_BASE_ADDRESS);
+    bcm2711gpio_initialize(MMIO_GPIO);
 
     // Configure gpio to redirect uart to pins 14 and 15
     bcm2771gpio_set_pin_mode(14, GPIO_ALT_FUNC0);
@@ -18,7 +15,7 @@ void console_initialize() {
     bcm2771gpio_set_resistor_mode(15, GPIO_NO_RESISTOR);
     /// TODO: setup clocks
 
-    bcm2835auxuart_initialize(UART_BASE_ADDRESS);
+    bcm2835auxuart_initialize(MMIO_UART);
 }
 
 void console_writechar(char character) {
