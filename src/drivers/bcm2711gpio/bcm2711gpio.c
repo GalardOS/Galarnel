@@ -49,7 +49,7 @@ void bcm2711gpio_initialize(long base_address) {
 
 void bcm2771gpio_set_pin_mode(uint8 pin, uint32 mode) {
     // Selector to activate the mode of the pin
-    int selector = mode << (pin % 10);
+    uint32 selector = mode << (pin % 10);
 
     // Set the mode on the specific bank
     if(ON_RANGE(pin, 50, 57)) {
