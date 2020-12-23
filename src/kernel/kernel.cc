@@ -14,80 +14,17 @@
  *    - Iker Galardi
  */
 
-extern "C" {
-	#include "utils.h"
-}
+#include "pal/debug.hh"
+#include "pal/cpu.hh"
 
-#include "hal/cpu.hh"
-#include "hal/excpt.hh"
-#include "hal/interrupts.hh"
+extern "C" void kernel_main(void) {
+	pal::debug::write_line("[+] Kernel entry reached\r\n");
 
-#include "mini_uart.hh"
-#include "klib.hh"
-#include "io.h"
+	int counter = 0;
+	while(true) {
+		pal::cpu::wait_cycles(0xFFF);
+		counter++;
 
-namespace timer {
-	unsigned int interval = 20000000;
-	int cur_val = 0;
-
-	void handler() {
-		kstd::printf("Klos \r\n");
+		pal::debug::write_line("[+] Inside the loop\r\n");
 	}
-
-	void clearer() {
-
-	}
-	void init() {
-		intc::id id;
-		id.domain = ENABLE_IRQS_1;
-		id.device_number = SYSTEM_TIMER_IRQ_1;
-		
-		kstd::printf("jandler addedl\r\n");
-		intc::add_handler(id, handler, clearer);
-		kstd::printf("taimer adedd\r\n");
-
-		kstd::printf("konsfigurins <:)\r\n");
-		cur_val = mem_get32(TIMER_C0);
-		cur_val += interval;
-		mem_put32(TIMER_C1, cur_val);
-		kstd::printf("consfijured closk\r\n");
-	}
-}
-
-extern "C" void kernel_main(void)
-{
-	// Initialize the mini uart for logging
-	muart::initialize();
-	muart::send_string("[+] Kernel preconfig completed.\r\n");
-	
-	// Initialize klib
-	muart::send_string("[+] Initializing klib... \r\n");
-	kstd::initialize();
-	kstd::printf("[+] Done!\r\n");
-
-	// Setting up the vector table
-	kstd::printf("[+] Setting up vector table... \r\n");
-	cpu::excp::vector_table table {
-		.sync_excpt = kstd::func<void(long, long)>::null(),
-		.irq_excpt = kstd::func<void(long, long)>(intc::generic_irq_handler),
-		.fiq_excpt = kstd::func<void(long, long)>::null(),
-		.err_excpt = kstd::func<void(long, long)>::null()
-	};
-	
-	cpu::excp::setup_vector(table);
-	cpu::excp::enable_irq();
-	kstd::printf("[+] Done!\r\n");
-
-	kstd::printf("[+] Setting up timer interrupts\r\n");
-	timer::init();
-	kstd::printf("[+] Done!");
-
-	int i = 0;
-	while (true) {
-		kstd::printf("[+] Doing nothing %d\r\n", i);
-		for(int i = 0; i < 0xFFFFF; i++);
-		i++;
-	}
-
-	kstd::printf("[+] Should not be here wtf\r\n");
 }

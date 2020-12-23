@@ -12,4 +12,6 @@ namespace pal { namespace cpu {
 
     void switch_usermode(long pc);
 
+    void wait_cycles(uint64 cycles);
+
 } }
