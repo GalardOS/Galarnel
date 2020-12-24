@@ -17,7 +17,5 @@ extern "C" void pre_configuration(void* mboot_header, uint32 magic) {
     call_global_constructors();
 
     pal::debug::initialize();
-    pal::debug::write_line("[+] Pre configuring the kernel\r\n");
-    
-    pal::cpu::initialize();
+    pal::debug::write_line("[+] Pre configuring the kernel");
 }
