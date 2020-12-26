@@ -1,7 +1,8 @@
 #include "common.hh"
 
 #include "pal/debug.hh"
-#include "pal/cpu.hh"
+
+#include "kernel/kernel.hh"
 
 typedef void (*ctor)();
 extern "C" ctor start_ctors;
@@ -16,6 +17,10 @@ extern "C" void pre_configuration(void* mboot_header, uint32 magic) {
     // Calls the global constructors for all the global variables.
     call_global_constructors();
 
+    // Initialize debug output
     pal::debug::initialize();
     pal::debug::write_line("[+] Pre configuring the kernel");
+
+    // Jump to kernel code 
+    kernel_main();
 }

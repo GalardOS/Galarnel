@@ -17,14 +17,16 @@
 #include "pal/debug.hh"
 #include "pal/cpu.hh"
 
-extern "C" void kernel_main(void) {
-	pal::debug::write_line("[+] Kernel entry reached\r\n");
+void kernel_main(void) {
+	pal::debug::write_line("[+] Kernel entry reached");
 
 	int counter = 0;
 	while(true) {
 		pal::cpu::wait_cycles(0xFFF);
 		counter++;
 
-		pal::debug::write_line("[+] Inside the loop\r\n");
+		pal::debug::write_line("[+] Inside the loop");
 	}
+
+	pal::debug::write_line("[+] This should not be printing ups");
 }

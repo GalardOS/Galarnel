@@ -1,6 +1,13 @@
 #include "pal/cpu.hh"
 
 namespace pal { namespace cpu {
+    uint8(*get_el)() = nullptr;
+
+    uint8(*get_cpuid)() = nullptr;
+
+    void(*switch_usermode)(long pc) = nullptr;
+    
+    void(*wait_cycles)(uint64 cycles) = nullptr;
 
     static void wait_cycles_impl(uint64 cycles) {
         int i = 0; 
