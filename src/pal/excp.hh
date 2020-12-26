@@ -12,6 +12,6 @@ namespace pal { namespace excp {
 
     void setup_handlers(const table& table);
 
-    void set_context_pointer(long ptr);
+    void(*set_context_pointer)(long ptr);
 
 } }

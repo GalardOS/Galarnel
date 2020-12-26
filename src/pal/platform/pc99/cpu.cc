@@ -2,23 +2,7 @@
 
 namespace pal { namespace cpu {
 
-    void initialize() {
-
-    }
-
-    uint8 get_el() {
-
-    }
-
-    uint8 get_cpuid() {
-
-    }
-
-    void switch_usermode(long pc) {
-
-    }
-
-    void wait_cycles(uint64 cycles) {
+    static void wait_cycles_impl(uint64 cycles) {
         int i = 0; 
         while(i < cycles) {
             int b = 1 + 1;
@@ -26,4 +10,10 @@ namespace pal { namespace cpu {
         }
     }
 
+    void initialize() {
+        get_el = nullptr;
+        get_cpuid = nullptr;
+        switch_usermode = nullptr;
+        wait_cycles = wait_cycles_impl;
+    }
 } }
