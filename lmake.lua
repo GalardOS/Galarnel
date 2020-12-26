@@ -6,8 +6,8 @@ LINKER = "/bin/ld"
 CXX_FLAGS = "-Isrc -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore"
 ASM_FLAGS = "-Isrc --32"
 
-CC_SOURCE = "src/kernel/kernel.cc src/pal/platform/pc99/debug.cc src/pal/platform/pc99/pre_configuration.cc src/pal/platform/pc99/cpu.cc"
-ASM_SOURCE = "src/pal/platform/pc99/boot.S"
+CC_SOURCE = "src/kernel/kernel.cc src/pal/platform/x86bios/debug.cc src/pal/platform/x86bios/pre_configuration.cc src/pal/platform/x86bios/cpu.cc"
+ASM_SOURCE = "src/pal/platform/x86bios/boot.S"
 
 OBJECT_FILES = "build/kernel.cc.o build/debug.cc.o build/pre_configuration.cc.o build/cpu.cc.o build/boot.S.o"
 
@@ -26,14 +26,14 @@ function build()
     -- Build multiboot image
     OBJECT_FILES = lmake_find("build/*.o")
     lmake_set_linker(LINKER)
-    lmake_set_linker_flags("-T linker/pc99.ld")
+    lmake_set_linker_flags("-T linker/x86bios.ld")
     lmake_set_linker_out("build/kernel.bin")
     lmake_link(OBJECT_FILES)
 end
 
 function run()
     build()
-    lmake_exec("qemu-system-i386 -kernel build/kernel.bin")
+    lmake_exec("qemu-system-i386 -kernel build/kernel.bin -serial stdio")
 end
 
 function clean()
