@@ -30,19 +30,23 @@ namespace pal { namespace debug {
             // (not-loopback with IRQs enabled and OUT#1 and OUT#2 bits enabled)
             io::out8(serial_ports[i] + 4, (uint8)0x0F);
         }
+
         // If no serial output device was found write an 'u' to the screen and waint until reboot
         while(!worked) VIDEO_MAP[0] = (VIDEO_MAP[0] & 0xFF00) | ('u');
     }
 
-    void write(const char* message) {
-        for(uint8 j = 0; j < 1; j++) {
-            for(uint32 i = 0; message[i] != '\0'; i++) {
-                // Wait until serial device is available to send data
-                while(io::in8(serial_ports[i] + 5) & (uint8)0x20 == 0);
+    void write(char ch) {
+        // Wait until serial device is available to send data
+        while(io::in8(serial_ports[0] + 5) & (uint8)0x20 == 0);
 
-                // Send the character
-                io::out8(serial_ports[i], message[i]);
-            }
+        // Send the character
+        io::out8(serial_ports[0], ch);
+
+    }
+
+    void write(const char* message) {
+        for(uint32 i = 0; message[i] != '\0'; i++) {
+            write(message[i]);
         }
     }
 
