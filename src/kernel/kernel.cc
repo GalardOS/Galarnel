@@ -22,7 +22,7 @@ void kernel_main(void) {
 
 	int counter = 0;
 	while(true) {
-		pal::cpu::wait_cycles(0xFFF);
+		pal::cpu::wait_cycles(0xFFFFF);
 		counter++;
 
 		pal::debug::write_line("[+] Inside the loop");
