@@ -9,7 +9,9 @@ namespace pal { namespace intc {
     typedef void(*intc_handler)(void);
     typedef uint16 cpuid;
 
-    struct handler_descriptor {
+    typedef uint16 reason;
+
+    struct irq_handler_descriptor {
         uint32 irqid;
         uint16 target;
         intc_handler handler;
@@ -17,7 +19,9 @@ namespace pal { namespace intc {
 
     void initialize();
 
-    handler_id add_handler(const handler_descriptor& descriptor);
+    handler_id add_handler(const irq_handler_descriptor& descriptor);
 
-    void remove_handler(handler_id descriptor);
+    void remove_handler(const irq_handler_descriptor& descriptor);
+
+    void add_error_handler(void(*error_handler)(reason));
 } }

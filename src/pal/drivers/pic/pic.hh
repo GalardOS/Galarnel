@@ -13,7 +13,6 @@ namespace pic {
 
     struct int_descriptor {
         uint8 int_number;
-        uint16 code_segment_selector_offset;
         void(*handler)();
         uint8 priviledge_level;
         desc_type descriptor_type;
@@ -22,4 +21,8 @@ namespace pic {
     void initialize();
 
     void set_entry(pic::int_descriptor entry);
+
+    void set_ignore_entry(uint8 int_number);
+
+    void set_interrupt_mask(uint16 mask);
 }
