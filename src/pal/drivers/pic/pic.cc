@@ -1,6 +1,6 @@
-#include "drivers/pic/pic.hh"
+#include "pal/drivers/pic/pic.hh"
 
-#include "drivers/gdt/gdt.hh"
+#include "pal/drivers/gdt/gdt.hh"
 
 #include "pal/cpu.hh"
 
@@ -18,19 +18,20 @@
 
 #define PIC_COMMAND_EOI 0x20
 
-extern "C" static void local_interrupt_ignore();
+extern "C" void local_interrupt_ignore();
 
 namespace pic {
-    pic::idt_structure descriptors[256];
 
     struct idt_structure {
         uint16 address_low_bits;
         uint16 code_segment_selector;
-        uint8 reseved;
+        uint8 reserved;
         uint8 access;
         uint16 address_high_bits;
     } __attribute__((packed));
 
+    pic::idt_structure descriptors[256];
+    
     void initialize() {
         // Setup global descriptor table
         gdt::set_entry(0, 0, 0, GDT_FLAG_NULL);

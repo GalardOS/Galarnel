@@ -1,6 +1,6 @@
 #include "pal/intc.hh"
 
-#include "drivers/pic/pic.hh"
+#include "pal/drivers/pic/pic.hh"
 
 namespace pal { namespace intc {
 

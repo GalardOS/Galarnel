@@ -6,10 +6,10 @@ LINKER = "/bin/ld"
 CXX_FLAGS = "-Isrc -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore"
 ASM_FLAGS = "-Isrc --32"
 
-CC_SOURCE = "src/kernel/kernel.cc src/pal/platform/x86bios/debug.cc src/pal/platform/x86bios/pre_configuration.cc src/pal/platform/x86bios/cpu.cc"
-ASM_SOURCE = "src/pal/platform/x86bios/boot.S"
+CC_SOURCE = "src/kernel/kernel.cc src/pal/platform/x86bios/debug.cc src/pal/platform/x86bios/intc.cc src/pal/platform/x86bios/pre_configuration.cc src/pal/platform/x86bios/cpu.cc src/pal/drivers/gdt/gdt.cc src/pal/drivers/pic/pic.cc"
+ASM_SOURCE = "src/pal/platform/x86bios/boot.S src/pal/drivers/pic/interrupt_stubs.S"
 
-OBJECT_FILES = "build/kernel.cc.o build/debug.cc.o build/pre_configuration.cc.o build/cpu.cc.o build/boot.S.o"
+OBJECT_FILES = "build/kernel.cc.o build/debug.cc.o build/pre_configuration.cc.o build/cpu.cc.o build/boot.S.o build/gdt.cc.o build/pic.cc.o build/intc.cc.o interrupt_stubs.S.o"
 
 function build()
     -- Compile C++ files

@@ -1,6 +1,6 @@
 #include "common.hh"
 
-#include "drivers/gdt/gdt.hh"
+#include "pal/drivers/gdt/gdt.hh"
 
 #include "pal/debug.hh"
 #include "pal/intc.hh"

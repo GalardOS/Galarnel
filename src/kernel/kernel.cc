@@ -16,6 +16,7 @@
 
 #include "pal/debug.hh"
 #include "pal/cpu.hh"
+#include "pal/intc.hh"
 
 void kernel_main(void) {
 	pal::debug::write_line("[+] Kernel entry reached");
