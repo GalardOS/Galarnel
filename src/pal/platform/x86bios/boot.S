@@ -15,6 +15,7 @@
 # Entry point of the program
 .global _start
 _start:
+    cli
     mov $kernel_stack, %esp
 
     # Getting the multiboot structure inside kernel_main

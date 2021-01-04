@@ -38,4 +38,8 @@ namespace pal { namespace intc {
 
     }
 
+    void enable();
+
+    void disable();
+
 } }

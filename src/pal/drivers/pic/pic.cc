@@ -20,6 +20,10 @@
 
 extern "C" void local_interrupt_ignore();
 
+extern "C" void generic_interrupt_handler(uint32 irqid) {
+    
+}
+
 namespace pic {
 
     struct idt_structure {

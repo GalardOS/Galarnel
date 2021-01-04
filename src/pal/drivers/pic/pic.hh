@@ -2,8 +2,6 @@
 
 #include "common.hh"
 
-
-
 namespace pic {
     enum class desc_type : uint8 {
         interrupt   = 0b110,

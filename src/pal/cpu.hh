@@ -4,13 +4,15 @@
 
 namespace pal { namespace cpu {
 
+    struct context;
+
     void initialize();
 
     uint8 get_el();
 
     uint8 get_cpuid();
 
-    void switch_usermode(long pc);
+    void switch_usermode(pal::cpu::context context);
 
     void wait_cycles(uint64 cycles);
 
