@@ -20,10 +20,6 @@
 
 extern "C" void local_interrupt_ignore();
 
-extern "C" void generic_interrupt_handler(uint32 irqid) {
-    
-}
-
 namespace pic {
 
     struct idt_structure {
@@ -84,6 +80,7 @@ namespace pic {
         descriptors[entry.int_number].access = 0x80 | (uint8)entry.descriptor_type | ((entry.priviledge_level & 3) << 5);
     }
 
+    /// TODO: maybe remove the entry from IDT instead of empty handler
     void set_ignore_entry(uint8 int_number) {
             pic::int_descriptor descriptor;
             descriptor.int_number = int_number;
