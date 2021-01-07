@@ -18,10 +18,18 @@
 #include "pal/cpu.hh"
 #include "pal/intc.hh"
 
-
+void timer_interrupt() {
+	pal::debug::write_line("Timer interrupt");
+}
 
 void kernel_main(void) {
 	pal::debug::write_line("[+] Kernel entry reached");
+
+	pal::intc::irq_handler_descriptor desc;
+	desc.irqid = 20;
+	desc.type = pal::intc::int_type::hardware;
+	desc.handler = timer_interrupt;
+	pal::intc::handler_id timer_id = pal::intc::add_handler(desc);
 
 	int counter = 0;
 	while(true) {

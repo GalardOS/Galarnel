@@ -79,7 +79,9 @@ namespace pic {
         // Indicate PICs we are in 8086 (whatever that means)
         pal::cpu::ports::out8(PIC_MASTER_DATA, 0x01);
         pal::cpu::ports::out8(PIC_SLAVE_DATA, 0x01);
-    }
+
+        pic::reload_idt();
+   }
 
     void set_entry(pic::int_descriptor entry) {
         // Set handler address
@@ -107,4 +109,20 @@ namespace pic {
             // Add the descriptor to IDT
             pic::set_entry(descriptor);
     }
+
+    void reload_idt() {
+        struct { uint16 size; uint32 ptr; } idtpr;
+        idtpr.size = sizeof(idt_structure) * 256 - 1;
+        idtpr.ptr = reinterpret_cast<uint32>(descriptors);
+        asm volatile("lidt %0" :: "m"(idtpr));
+    }
+
+    void enable() {
+        asm("sti");
+    }
+
+    void disable() {
+        asm("cli");
+    }
+
 }

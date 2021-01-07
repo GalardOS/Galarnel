@@ -39,4 +39,10 @@ namespace pic {
     void set_ignore_entry(uint8 int_number);
 
     void set_interrupt_mask(uint16 mask);
+
+    void reload_idt();
+    
+    void enable();
+
+    void disable();
 }

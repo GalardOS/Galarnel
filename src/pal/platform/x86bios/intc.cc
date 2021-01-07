@@ -121,6 +121,9 @@ namespace pal { namespace intc {
         SET_HLLHANDLER(0x0E);
         SET_HLLHANDLER(0x0F);
         SET_HLLHANDLER(0x31);
+
+        pic::reload_idt();
+        pic::enable();
     }
 
     handler_id add_handler(const irq_handler_descriptor& descriptor) {
