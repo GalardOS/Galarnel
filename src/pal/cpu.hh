@@ -17,68 +17,23 @@ namespace pal { namespace cpu {
     void wait_cycles(uint64 cycles);
 
     namespace ports {
-        inline uint8 in8(uint16 port)
-        {
-            uint8 value;
-            asm volatile("inb %1, %0"
-                         : "=a"(value)
-                         : "Nd"(port));
-            return value;
-        }
+        uint8 in8(uint16 port);
 
-        inline uint16 in16(uint16 port)
-        {
-            uint16 value;
-            asm volatile("inw %1, %0"
-                         : "=a"(value)
-                         : "Nd"(port));
-            return value;
-        }
+        uint16 in16(uint16 port);
 
-        inline uint32 in32(uint16 port)
-        {
-            uint32 value;
-            asm volatile("inl %1, %0"
-                         : "=a"(value)
-                         : "Nd"(port));
-            return value;
-        }
+        uint32 in32(uint16 port);
 
-        inline void repeated_in16(uint16 port, uint16* buffer, int buffer_size)
-        {
-            asm volatile("rep insw"
-                         : "+D"(buffer), "+c"(buffer_size)
-                         : "d"(port)
-                         : "memory");
-        }
+        void repeated_in16(uint16 port, uint16* buffer, int buffer_size);
 
-        inline void out8(uint16 port, uint8 value)
-        {
-            asm volatile("outb %0, %1" ::"a"(value), "Nd"(port));
-        }
+        void out8(uint16 port, uint8 value);
 
-        inline void out16(uint16 port, uint16 value)
-        {
-            asm volatile("outw %0, %1" ::"a"(value), "Nd"(port));
-        }
+        void out16(uint16 port, uint16 value);
 
-        inline void out32(uint16 port, uint32 value)
-        {
-            asm volatile("outl %0, %1" ::"a"(value), "Nd"(port));
-        }
+        void out32(uint16 port, uint32 value);
 
-        inline void repeated_out16(uint16 port, const uint16* data, int data_size)
-        {
-            asm volatile("rep outsw"
-                         : "+S"(data), "+c"(data_size)
-                         : "d"(port));
-        }
+        void repeated_out16(uint16 port, const uint16* data, int data_size);
 
-        inline void delay(uint32 microseconds)
-        {
-            for (uint32 i = 0; i < microseconds; ++i)
-                cpu::ports::in8(0x80);
-        }
+        void delay(uint32 microseconds);
     }
 
 } }

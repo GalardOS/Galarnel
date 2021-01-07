@@ -1,4 +1,22 @@
+/*
+ * This project is provided under the GNU GPL v2 license, more information can 
+ * found on https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *
+ * Authors:
+ *    - Iker Galardi
+ */
+
 #include "pal/intc.hh"
+
+#include "pal/debug.hh"
 
 #include "pal/drivers/pic/pic.hh"
 
@@ -7,7 +25,7 @@ constexpr uint8 HIRQ_BASE = 0x20;
 pal::intc::intc_handler handlers[255];
 
 extern "C" void generic_interrupt_handler(uint8 irqid) {
-    
+    pal::debug::write_line("CPU interrupted");
 }
 
 #pragma region llhandlers
@@ -63,7 +81,7 @@ namespace pal { namespace intc {
         descriptor.descriptor_type = pic::desc_type::interrupt;
         descriptor.priviledge_level = 0;
 
-        // Set the low level handlers exception handlers
+        // Set the low level exception handlers
         SET_ELLHANDLER(0x00);
         SET_ELLHANDLER(0x01);
         SET_ELLHANDLER(0x02);
@@ -84,7 +102,8 @@ namespace pal { namespace intc {
         SET_ELLHANDLER(0x11);
         SET_ELLHANDLER(0x12);
         SET_ELLHANDLER(0x13);
- 
+
+        // Set the low level hardware interrupt handlers
         SET_HLLHANDLER(0x00);
         SET_HLLHANDLER(0x01);
         SET_HLLHANDLER(0x02);
@@ -115,6 +134,7 @@ namespace pal { namespace intc {
     }
 
     void add_error_handler(void(*error_handler)(reason)) {
+
 
     }
 

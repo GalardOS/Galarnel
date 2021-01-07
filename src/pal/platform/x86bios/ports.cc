@@ -26,6 +26,8 @@
 
 #pragma once
 
+#include "common.hh"
+
 namespace io {
 
 inline uint8 in8(uint16 port)
