@@ -141,8 +141,12 @@ namespace pal { namespace intc {
 
     }
 
-    void enable();
+    void enable() {
+        pic::enable();
+    }
 
-    void disable();
+    void disable() {
+        pic::disable();
+    }
 
 } }
