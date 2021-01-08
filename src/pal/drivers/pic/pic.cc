@@ -31,10 +31,11 @@
 #define PIC_SLAVE_COMMAND 0xA0
 #define PIC_SLAVE_DATA 0xA1
 #define PIC_SLAVE_IMR 0xA1
-
 #define PIC_COMMAND_EOI 0x20
 
-extern "C" void local_interrupt_ignore();
+#define INT_DESCRIPTOR_PRESENT 0x80
+
+#define MAX_IDT_ENTRIES 250
 
 namespace pic {
 
@@ -46,7 +47,7 @@ namespace pic {
         uint16 address_high_bits;
     } __attribute__((packed));
 
-    pic::idt_structure descriptors[256];
+    pic::idt_structure descriptors[MAX_IDT_ENTRIES];
     
     void initialize() {
         // Setup global descriptor table
@@ -56,11 +57,6 @@ namespace pic {
         gdt::set_entry(3, 0, 0xFFFFF, GDT_FLAG_SEGMENT | GDT_FLAG_32_BIT | GDT_FLAG_CODESEG | GDT_FLAG_4K_GRAN | GDT_FLAG_PRESENT | GDT_FLAG_RING3);
         gdt::set_entry(4, 0, 0xFFFFF, GDT_FLAG_SEGMENT | GDT_FLAG_32_BIT | GDT_FLAG_DATASEG | GDT_FLAG_4K_GRAN | GDT_FLAG_PRESENT | GDT_FLAG_RING3);
         gdt::reload_table();
-        
-        // Setup all the descriptors as ignore when not present
-        for(uint16 i = 0; i < 256; i++) {
-            set_ignore_entry(i);
-        }
 
         // Send initialization command to both PICs
         pal::cpu::ports::out8(PIC_MASTER_COMMAND, 0x11);
@@ -89,40 +85,28 @@ namespace pic {
         descriptors[entry.int_number].address_high_bits = ((uint32)entry.handler >> 16) & 0xFFFF;
         
         // Set the code segment selector
-        descriptors[entry.int_number].code_segment_selector = gdt::get_entry_offset(KERNEL_CODE_SEGMENT);
+        descriptors[entry.int_number].code_segment_selector = KERNEL_CODE_SEGMENT * sizeof(uint64);
         
         // Reserved byte NEEDS to be 0
         descriptors[entry.int_number].reserved = 0;
 
-        // Sets the flags for entry access (0x80 flag sets the descriptor as present)
-        descriptors[entry.int_number].access = 0x80 | (uint8)entry.descriptor_type | ((entry.priviledge_level & 3) << 5);
-    }
-
-    /// TODO: maybe remove the entry from IDT instead of empty handler
-    void set_ignore_entry(uint8 int_number) {
-            pic::int_descriptor descriptor;
-            descriptor.int_number = int_number;
-            descriptor.handler = &local_interrupt_ignore;
-            descriptor.priviledge_level = 0;                                                // Priviledge level to kernel mode
-            descriptor.descriptor_type = pic::desc_type::interrupt;
-
-            // Add the descriptor to IDT
-            pic::set_entry(descriptor);
+        // Sets the flags for entry access
+        descriptors[entry.int_number].access = INT_DESCRIPTOR_PRESENT | (uint8)entry.descriptor_type | ((entry.priviledge_level & 3) << 5);
     }
 
     void reload_idt() {
-        struct { uint16 size; uint32 ptr; } idtpr;
-        idtpr.size = sizeof(idt_structure) * 256 - 1;
-        idtpr.ptr = reinterpret_cast<uint32>(descriptors);
-        asm volatile("lidt %0" :: "m"(idtpr));
+        struct { uint16 size; uint32 ptr; } idtptr;
+        idtptr.size = sizeof(idt_structure) * MAX_IDT_ENTRIES - 1;
+        idtptr.ptr = reinterpret_cast<uint32>(descriptors);
+        asm volatile("lidt %0" :: "m"(idtptr));
     }
 
     void enable() {
-        asm("sti");
+        asm volatile ("sti");
     }
 
     void disable() {
-        asm("cli");
+        asm volatile ("cli");
     }
 
 }

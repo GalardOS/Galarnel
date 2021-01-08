@@ -24,6 +24,8 @@ constexpr uint8 HIRQ_BASE = 0x20;
 
 pal::intc::intc_handler handlers[255];
 
+extern "C" void local_interrupt_ignore();
+
 extern "C" void generic_interrupt_handler(uint8 irqid) {
     pal::debug::write_line("CPU interrupted");
 }
@@ -122,7 +124,6 @@ namespace pal { namespace intc {
         SET_HLLHANDLER(0x0F);
         SET_HLLHANDLER(0x31);
 
-        pic::reload_idt();
         pic::enable();
     }
 
@@ -133,11 +134,15 @@ namespace pal { namespace intc {
     }
 
     void remove_handler(irq_handler_descriptor descriptor) {
-        pic::set_ignore_entry(descriptor.irqid);
+        pic::int_descriptor desc;
+        desc.descriptor_type = pic::desc_type::trap;
+        desc.int_number = descriptor.irqid;
+        desc.handler = &local_interrupt_ignore;
+        desc.priviledge_level = 0;
+        pic::set_entry(desc);
     }
 
     void add_error_handler(void(*error_handler)(reason)) {
-
 
     }
 
