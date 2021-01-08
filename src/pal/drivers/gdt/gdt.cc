@@ -23,10 +23,13 @@ namespace gdt {
 
     void reload_table() {
         // Load the global descriptor table on the cpu register
-        uint32 gdt_register[2];
-        gdt_register[0] = reinterpret_cast<uint32>(gdt_entries);
-        gdt_register[1] = sizeof(segment) * MAX_GDT_ENTRIES;
-        asm volatile("lgdt (%0)" :: "p" (reinterpret_cast<uint8*>(gdt_register) + 2));
+        struct {
+            uint16 limit;
+            void* ptr;
+        } __attribute__((packed)) gdt_register;
+        gdt_register.limit = MAX_GDT_ENTRIES * sizeof(gdt::segment) - 1;
+        gdt_register.ptr = gdt_entries;
+        asm volatile("lgdt %0" :: "m"(gdt_register));
     }
 
     void set_entry(uint16 i, uint32 base, uint32 limit, gdt::flags flags) {

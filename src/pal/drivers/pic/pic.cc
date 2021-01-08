@@ -95,7 +95,10 @@ namespace pic {
     }
 
     void reload_idt() {
-        struct { uint16 size; uint32 ptr; } idtptr;
+        struct { 
+            uint16 size;
+            uint32 ptr;
+        } __attribute__((packed)) idtptr;
         idtptr.size = sizeof(idt_structure) * MAX_IDT_ENTRIES - 1;
         idtptr.ptr = reinterpret_cast<uint32>(descriptors);
         asm volatile("lidt %0" :: "m"(idtptr));
