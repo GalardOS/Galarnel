@@ -33,7 +33,7 @@ end
 
 function run()
     build()
-    lmake_exec("qemu-system-i386 -kernel build/kernel.bin -serial stdio")
+    lmake_exec("qemu-system-i386 -kernel build/kernel.bin -serial stdio -no-reboot")
 end
 
 function clean()

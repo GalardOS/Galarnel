@@ -104,11 +104,11 @@ namespace pic {
 
         pal::debug::write_line("[PIC] Done!");
 
-        pal::debug::write("[PIC] Loading IDT... ");
+        pal::debug::write_line("[PIC] Loading IDT... ");
 
         pic::reload_idt();
 
-        pal::debug::write_line("Done!");
+        pal::debug::write_line("[PIC] Done!");
     }
 
     void set_entry(pic::int_descriptor entry) {
