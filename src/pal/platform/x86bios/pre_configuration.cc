@@ -39,11 +39,12 @@ extern "C" void pre_configuration(void* mboot_header, uint32 magic) {
     // Initialize debug output
     pal::debug::initialize();
     pal::debug::write_line("");
-    pal::debug::write_line("[+] Pre configuring the kernel.");
+    pal::debug::write_line("[PAL] Debugging enabled.");
 
+
+    pal::debug::write_line("[PAL] Configuring interrupt manager...");
     pal::intc::initialize();
-
-    pal::debug::write_line("[+] Interrupt management configured.");
+    pal::debug::write_line("[PAL] Done!");
 
     // Jump to kernel code 
     kernel_main();

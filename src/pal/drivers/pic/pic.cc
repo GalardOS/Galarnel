@@ -51,18 +51,39 @@ namespace pic {
     pic::idt_structure descriptors[MAX_IDT_ENTRIES];
     
     void initialize() {
-        pal::debug::write("[PIC] Setting up GDT... ");
+        pal::debug::write_line("[PIC] Setting up GDT... ");
 
-        gdt::set_entry(0, 0, 0, GDT_FLAG_NULL);
-        gdt::set_entry(1, 0, 0xFFFFF, GDT_FLAG_SEGMENT | GDT_FLAG_32_BIT | GDT_FLAG_CODESEG | GDT_FLAG_4K_GRAN | GDT_FLAG_PRESENT); 
-        gdt::set_entry(2, 0, 0xFFFFF, GDT_FLAG_SEGMENT | GDT_FLAG_32_BIT | GDT_FLAG_DATASEG | GDT_FLAG_4K_GRAN | GDT_FLAG_PRESENT);
-        gdt::set_entry(3, 0, 0xFFFFF, GDT_FLAG_SEGMENT | GDT_FLAG_32_BIT | GDT_FLAG_CODESEG | GDT_FLAG_4K_GRAN | GDT_FLAG_PRESENT | GDT_FLAG_RING3);
-        gdt::set_entry(4, 0, 0xFFFFF, GDT_FLAG_SEGMENT | GDT_FLAG_32_BIT | GDT_FLAG_DATASEG | GDT_FLAG_4K_GRAN | GDT_FLAG_PRESENT | GDT_FLAG_RING3);
+        gdt::set_entry(0, 0, 0, GDT_ACCESS_NULL, GDT_FLAGS_NULL);
+        
+        // Kernel code segment
+        gdt::set_entry(1,
+                       0, 0xFFFFF, 
+                       GDT_ACCESS_PRESENT | GDT_ACCESS_KERNEL | GDT_ACCESS_RDWR | GDT_ACCESS_EXEC, 
+                       GDT_FLAGS_32BIT_MODE | GDT_FLAGS_GRANULARITY);
+        
+        // Kernel data segment
+        gdt::set_entry(2,
+                       0, 0xFFFFF, 
+                       GDT_ACCESS_PRESENT | GDT_ACCESS_KERNEL | GDT_ACCESS_RDWR | GDT_ACCESS_DATA, 
+                       GDT_FLAGS_32BIT_MODE | GDT_FLAGS_GRANULARITY);
+
+        // User code segment
+        gdt::set_entry(3,
+                       0, 0xFFFFF, 
+                       GDT_ACCESS_PRESENT | GDT_ACCESS_USER | GDT_ACCESS_RDWR | GDT_ACCESS_EXEC, 
+                       GDT_FLAGS_32BIT_MODE | GDT_FLAGS_GRANULARITY);
+
+        // User data segment
+        gdt::set_entry(4,
+                       0, 0xFFFFF, 
+                       GDT_ACCESS_PRESENT | GDT_ACCESS_USER | GDT_ACCESS_RDWR | GDT_ACCESS_DATA, 
+                       GDT_FLAGS_32BIT_MODE | GDT_FLAGS_GRANULARITY);
+       
         gdt::reload_table();
 
-        pal::debug::write_line("Done!");
+        pal::debug::write_line("[PIC] Done!");
 
-        pal::debug::write("[PIC] Configuring PICS... ");
+        pal::debug::write_line("[PIC] Configuring PICS... ");
         // Send initialization command to both PICs
         pal::cpu::ports::out8(PIC_MASTER_COMMAND, 0x11);
         pal::cpu::ports::out8(PIC_SLAVE_COMMAND, 0x11);
@@ -81,14 +102,14 @@ namespace pic {
         pal::cpu::ports::out8(PIC_MASTER_DATA, 0x01);
         pal::cpu::ports::out8(PIC_SLAVE_DATA, 0x01);
 
-        pal::debug::write_line("Done!");
+        pal::debug::write_line("[PIC] Done!");
 
-        pal::debug::write("[PIC] Loading IDT.");
+        pal::debug::write("[PIC] Loading IDT... ");
 
         pic::reload_idt();
 
-        pal::debug::write_line("[PIC] IDT reloaded.");
-   }
+        pal::debug::write_line("Done!");
+    }
 
     void set_entry(pic::int_descriptor entry) {
         // Set handler address

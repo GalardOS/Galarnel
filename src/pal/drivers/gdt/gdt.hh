@@ -18,27 +18,36 @@
 
 #include "common.hh"
 
-#define GDT_FLAG_NULL 0
-#define GDT_FLAG_DATASEG 0x02
-#define GDT_FLAG_CODESEG 0x0a
-#define GDT_FLAG_TSS 0x09
+#define GDT_ACCESS_PRESENT BIT(7)
+#define GDT_ACCESS_KERNEL  BIT(5) | BIT(6)
+#define GDT_ACCESS_SEGMENT 0x10
+#define GDT_ACCESS_USER    0x00
+#define GDT_ACCESS_EXEC    BIT(3)
+#define GDT_ACCESS_DATA    0x00
+#define GDT_ACCESS_RDWR    BIT(2)
+#define GDT_ACCESS_NULL    0x00
 
-#define GDT_FLAG_SEGMENT 0x10
-#define GDT_FLAG_RING0 0x00
-#define GDT_FLAG_RING3 0x60
-#define GDT_FLAG_PRESENT 0x80
-
-#define GDT_FLAG_4K_GRAN 0x800
-#define GDT_FLAG_32_BIT 0x400
+#define GDT_FLAGS_GRANULARITY BIT(3)
+#define GDT_FLAGS_32BIT_MODE  BIT(2)
+#define GDT_FLAGS_NULL        0x00
 
 namespace gdt {
 
-    typedef uint64 segment;
-    typedef uint16 flags;
+    struct entry {
+        uint16 limit0;
+        uint16 base0;
+        uint8  base1;
+        uint8  access;
+        uint8  limit_and_flags;
+        uint8  base2;
+    };
+
+    typedef uint8 flags;
+    typedef uint8 access;
 
     void reload_table();
 
-    void set_entry(uint16 i, uint32 base, uint32 limit, gdt::flags flags);
-    gdt::segment get_entry(uint16 i);
+    void set_entry(uint16 i, uint32 base, uint32 limit, gdt::access access, gdt::flags flags);
+    gdt::entry get_entry(uint16 i);
     uint16 get_entry_offset(uint16 i);
 };

@@ -19,7 +19,7 @@
 #define MAX_GDT_ENTRIES 64
 
 namespace gdt {
-    static segment gdt_entries[MAX_GDT_ENTRIES];
+    static gdt::entry gdt_entries[MAX_GDT_ENTRIES];
 
     void reload_table() {
         // Load the global descriptor table on the cpu register
@@ -27,27 +27,29 @@ namespace gdt {
             uint16 limit;
             void* ptr;
         } __attribute__((packed)) gdt_register;
-        gdt_register.limit = MAX_GDT_ENTRIES * sizeof(gdt::segment) - 1;
+        gdt_register.limit = MAX_GDT_ENTRIES * sizeof(gdt::entry) - 1;
         gdt_register.ptr = gdt_entries;
         asm volatile("lgdt %0" :: "m"(gdt_register));
     }
 
-    void set_entry(uint16 i, uint32 base, uint32 limit, gdt::flags flags) {
-        uint16 flag_int = static_cast<uint16>(flags);
+    void set_entry(uint16 i, uint32 base, uint32 limit, gdt::access access, gdt::flags flags) {
+        gdt::entry& entry = gdt_entries[i];
 
-        gdt_entries[i] = limit & 0xFFFLL;
-        gdt_entries[i] |= (base & 0xFFFFFFLL) << 16;
-        gdt_entries[i] |= (flag_int & 0xFFLL) << 40;
-        gdt_entries[i] |= ((limit >> 16) & 0xFLL) << 48;
-        gdt_entries[i] |= ((flag_int >> 8) & 0xFFLL) << 52;
-        gdt_entries[i] |= ((base >> 24) & 0xFFLL) << 56;
+        // Setting the limit and flags
+        entry.limit0 = limit & 0xFFFF;
+        entry.limit_and_flags = (limit >> 12) & flags;
+
+        // Setting the base 
+        entry.base0 = (base >> 0 ) & 0xFFFF;
+        entry.base1 = (base >> 16) & 0xFF;
+        entry.base2 = (base >> 24) & 0xFF;
+
+        // Setting the access
+        entry.access = access;
     }
+    
 
-    segment get_entry(uint16 i) {
+    gdt::entry get_entry(uint16 i) {
         return gdt_entries[i];
-    }
-
-    uint16 get_entry_offset(uint16 i) {
-        return reinterpret_cast<uint8*>(gdt_entries[i]) - reinterpret_cast<uint8*>(gdt_entries);
     }
 }
