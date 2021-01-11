@@ -19,6 +19,7 @@
 #include "pal/drivers/gdt/gdt.hh"
 
 #include "pal/cpu.hh"
+#include "pal/debug.hh"
 
 #define KERNEL_CODE_SEGMENT 1
 #define KERNEL_DATA_SEGMENT 2
@@ -50,7 +51,8 @@ namespace pic {
     pic::idt_structure descriptors[MAX_IDT_ENTRIES];
     
     void initialize() {
-        // Setup global descriptor table
+        pal::debug::write("[PIC] Setting up GDT... ");
+
         gdt::set_entry(0, 0, 0, GDT_FLAG_NULL);
         gdt::set_entry(1, 0, 0xFFFFF, GDT_FLAG_SEGMENT | GDT_FLAG_32_BIT | GDT_FLAG_CODESEG | GDT_FLAG_4K_GRAN | GDT_FLAG_PRESENT); 
         gdt::set_entry(2, 0, 0xFFFFF, GDT_FLAG_SEGMENT | GDT_FLAG_32_BIT | GDT_FLAG_DATASEG | GDT_FLAG_4K_GRAN | GDT_FLAG_PRESENT);
@@ -58,6 +60,9 @@ namespace pic {
         gdt::set_entry(4, 0, 0xFFFFF, GDT_FLAG_SEGMENT | GDT_FLAG_32_BIT | GDT_FLAG_DATASEG | GDT_FLAG_4K_GRAN | GDT_FLAG_PRESENT | GDT_FLAG_RING3);
         gdt::reload_table();
 
+        pal::debug::write_line("Done!");
+
+        pal::debug::write("[PIC] Configuring PICS... ");
         // Send initialization command to both PICs
         pal::cpu::ports::out8(PIC_MASTER_COMMAND, 0x11);
         pal::cpu::ports::out8(PIC_SLAVE_COMMAND, 0x11);
@@ -76,7 +81,13 @@ namespace pic {
         pal::cpu::ports::out8(PIC_MASTER_DATA, 0x01);
         pal::cpu::ports::out8(PIC_SLAVE_DATA, 0x01);
 
+        pal::debug::write_line("Done!");
+
+        pal::debug::write("[PIC] Loading IDT.");
+
         pic::reload_idt();
+
+        pal::debug::write_line("[PIC] IDT reloaded.");
    }
 
     void set_entry(pic::int_descriptor entry) {
@@ -111,5 +122,4 @@ namespace pic {
     void disable() {
         asm volatile ("cli");
     }
-
 }
