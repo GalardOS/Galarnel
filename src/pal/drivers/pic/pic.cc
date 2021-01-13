@@ -48,7 +48,7 @@ namespace pic {
         uint16 address_high_bits;
     } __attribute__((packed));
 
-    pic::idt_structure descriptors[MAX_IDT_ENTRIES];
+    static pic::idt_structure descriptors[MAX_IDT_ENTRIES];
     
     void initialize() {
         pal::debug::write_line("[PIC] Setting up GDT... ");
@@ -117,7 +117,7 @@ namespace pic {
         descriptors[entry.int_number].address_high_bits = ((uint32)entry.handler >> 16) & 0xFFFF;
         
         // Set the code segment selector
-        descriptors[entry.int_number].code_segment_selector = KERNEL_CODE_SEGMENT * sizeof(uint64);
+        descriptors[entry.int_number].code_segment_selector = KERNEL_CODE_SEGMENT;
         
         // Reserved byte NEEDS to be 0
         descriptors[entry.int_number].reserved = 0;
@@ -129,10 +129,11 @@ namespace pic {
     void reload_idt() {
         struct { 
             uint16 size;
-            uint32 ptr;
+            void* ptr;
         } __attribute__((packed)) idtptr;
-        idtptr.size = sizeof(idt_structure) * MAX_IDT_ENTRIES - 1;
-        idtptr.ptr = reinterpret_cast<uint32>(descriptors);
+
+        idtptr.size = sizeof(idt_structure) * 8 - 1;
+        idtptr.ptr = descriptors;
         asm volatile("lidt %0" :: "m"(idtptr));
     }
 
