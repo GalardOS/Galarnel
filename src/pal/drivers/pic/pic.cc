@@ -59,31 +59,32 @@ namespace pic {
         gdt::set_entry(1,
                        0, 0xFFFFF, 
                        GDT_ACCESS_PRESENT | GDT_ACCESS_KERNEL | GDT_ACCESS_RDWR | GDT_ACCESS_EXEC, 
-                       GDT_FLAGS_32BIT_MODE | GDT_FLAGS_GRANULARITY);
+                       GDT_FLAGS_32BIT_MODE);
         
         // Kernel data segment
         gdt::set_entry(2,
                        0, 0xFFFFF, 
                        GDT_ACCESS_PRESENT | GDT_ACCESS_KERNEL | GDT_ACCESS_RDWR | GDT_ACCESS_DATA, 
-                       GDT_FLAGS_32BIT_MODE | GDT_FLAGS_GRANULARITY);
+                       GDT_FLAGS_32BIT_MODE);
 
         // User code segment
         gdt::set_entry(3,
                        0, 0xFFFFF, 
                        GDT_ACCESS_PRESENT | GDT_ACCESS_USER | GDT_ACCESS_RDWR | GDT_ACCESS_EXEC, 
-                       GDT_FLAGS_32BIT_MODE | GDT_FLAGS_GRANULARITY);
+                       GDT_FLAGS_32BIT_MODE);
 
         // User data segment
         gdt::set_entry(4,
                        0, 0xFFFFF, 
                        GDT_ACCESS_PRESENT | GDT_ACCESS_USER | GDT_ACCESS_RDWR | GDT_ACCESS_DATA, 
-                       GDT_FLAGS_32BIT_MODE | GDT_FLAGS_GRANULARITY);
+                       GDT_FLAGS_32BIT_MODE);
        
         gdt::reload_table();
 
         pal::debug::write_line("[PIC] Done!");
 
         pal::debug::write_line("[PIC] Configuring PICS... ");
+
         // Send initialization command to both PICs
         pal::cpu::ports::out8(PIC_MASTER_COMMAND, 0x11);
         pal::cpu::ports::out8(PIC_SLAVE_COMMAND, 0x11);
@@ -113,14 +114,11 @@ namespace pic {
 
     void set_entry(pic::int_descriptor entry) {
         // Set handler address
-        descriptors[entry.int_number].address_low_bits = ((uint32)entry.handler) & 0xFFFF;
-        descriptors[entry.int_number].address_high_bits = ((uint32)entry.handler >> 16) & 0xFFFF;
+        descriptors[entry.int_number].address_low_bits = static_cast<uint16>(((uint32)entry.handler) & 0xFFFF);
+        descriptors[entry.int_number].address_high_bits = static_cast<uint16>(((uint32)entry.handler >> 16) & 0xFFFF);
         
         // Set the code segment selector
-        descriptors[entry.int_number].code_segment_selector = KERNEL_CODE_SEGMENT;
-        
-        // Reserved byte NEEDS to be 0
-        descriptors[entry.int_number].reserved = 0;
+        descriptors[entry.int_number].code_segment_selector = KERNEL_CODE_SEGMENT * sizeof(gdt::entry);
 
         // Sets the flags for entry access
         descriptors[entry.int_number].access = INT_DESCRIPTOR_PRESENT | (uint8)entry.descriptor_type | ((entry.priviledge_level & 3) << 5);
