@@ -1,0 +1,3 @@
+[submodule "lib/libsteel"]
+	path = lib/libsteel
+	url = https://github.com/GalardOS/libsteel
