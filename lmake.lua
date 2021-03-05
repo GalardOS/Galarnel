@@ -1,9 +1,10 @@
 lmake_compatibility_version(1)
 
-LIBSTEEL_LINKER_FILE = "lib/libsteel/linker/linker.ld"
-LIBSTEEL_OBJECT_FILES = ""
+lmake_include("lib/libsteel/lmake.lua")
 
-INCLUDE_DIRECTORIES = "Isrc/ "
+LIBSTEEL_LINKER_FILE = "lib/libsteel/linker/linker.ld"
+
+INCLUDE_DIRECTORIES = "-Isrc/ -Ilib/libsteel/lib"
 
 function prepare_libraries()
     -- Build the library
@@ -19,6 +20,13 @@ function prepare_libraries()
 end
 
 function build()
-    source_files = lmake_find("src/**.cc")
-    asm_files = lmake_find("src/**.S")
+    local additional_compilation_flags = INCLUDE_DIRECTORIES
+
+    local source_files = lmake_find("src/**.cc")
+    local asm_files = lmake_find("src/**.S")
+
+    compile_files(source_files, asm_files, additional_compilation_flags)
+
+    local obj_files = lmake_find("bin/**.o")
+    link_executable(obj_files, LIBSTEEL_LINKER_FILE)
 end
