@@ -1,10 +1,12 @@
 #include "libsteel/devices/mini_uart.hh"
 
 #include "drivers/bcm2835intc.hh"
+#include "drivers/bcm2835auxuart.hh"
 
 void main(int argc, char** argv) {
-    steel::uart_send_string("Hello World from iquernel!\r\n");
-    uint64 buffer[512];
+    drv::bcm2835auxuart::init();
+    drv::bcm2835auxuart::send_string("Jelou from iquernel!!\r\n");
+    
     drv::bcm2835intc::initialize();
 
     while(true);

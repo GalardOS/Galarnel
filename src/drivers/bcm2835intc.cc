@@ -1,6 +1,6 @@
 #include "bcm2835intc.hh" 
  
-#define BCM2835_BASE_REGISTER 0x7E00B000
+#define BCM2835_BASE_REGISTER 0x3F00B000
 #define PENDING_ARM    ((volatile uint32*)(BCM2835_BASE_REGISTER + 0x200))
 #define PENDING1       ((volatile uint32*)(BCM2835_BASE_REGISTER + 0x204))
 #define PENDING2       ((volatile uint32*)(BCM2835_BASE_REGISTER + 0x208))

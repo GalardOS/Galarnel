@@ -1,5 +1,9 @@
 #include "bcm2835auxuart.hh"
 
+#include "libsteel/common.hh"
+
+#define PBASE 0x3F000000
+
 #define GPFSEL1         ((volatile uint32*)(PBASE+0x00200004))
 #define GPSET0          ((volatile uint32*)(PBASE+0x0020001C))
 #define GPCLR0          ((volatile uint32*)(PBASE+0x00200028))
@@ -19,8 +23,54 @@
 #define AUX_MU_STAT_REG ((volatile uint32*)(PBASE+0x00215064))
 #define AUX_MU_BAUD_REG ((volatile uint32*)(PBASE+0x00215068))
 
+void inline_delay(uint64 count) {
+    while(count != 0) {
+        asm volatile ("nop");
+        count--;
+    }
+}
+
 namespace drv {
     namespace bcm2835auxuart {
+        void init() {
+            unsigned int selector;
 
+            selector = *GPFSEL1;
+            selector &= ~(7<<12);                   // clean gpio14
+            selector |= 2<<12;                      // set alt5 for gpio14
+            selector &= ~(7<<15);                   // clean gpio15
+            selector |= 2<<15;                      // set alt5 for gpio15
+            *GPFSEL1 = selector;
+
+            *GPPUD = 0;
+            inline_delay(150);
+            *GPPUDCLK0 = (1 << 14)|(1 << 15);
+            inline_delay(150);
+            *GPPUDCLK0 = 0;
+
+            *AUX_ENABLES = 1;                   //Enable mini uart (this also enables access to it registers)
+            *AUX_MU_CNTL_REG = 0;               //Disable auto flow control and disable receiver and transmitter (for now)
+            *AUX_MU_IER_REG = 0;                //Disable receive and transmit interrupts
+            *AUX_MU_LCR_REG = 3;                //Enable 8 bit mode
+            *AUX_MU_MCR_REG = 0;                //Set RTS line to be always high
+            *AUX_MU_BAUD_REG = 270;             //Set baud rate to 115200
+
+            *AUX_MU_CNTL_REG = 3;               //Finally, enable transmitter and receiver
+        }
+         
+        char recv() {
+            while(!(*AUX_MU_LSR_REG & 0x01));
+            return *AUX_MU_IO_REG & 0xFF;
+        }
+
+        void send(char c) {
+             while(!(*AUX_MU_LSR_REG & 0x20));
+            *AUX_MU_IO_REG = c;           
+        }
+        void send_string(const char* str) {
+            for (int i = 0; str[i] != '\0'; i ++) {
+                drv::bcm2835auxuart::send((char)str[i]);
+            }
+        }
     }
 }
