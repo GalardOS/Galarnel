@@ -12,6 +12,8 @@ enum class exception_type : uint64 {
 void(*events[4])(uint64, uint64);
 
 extern "C" void exception_entry(uint64 type, uint64 esr, uint64 elr) {
+    asm volatile ("msr daifset, #2");
+    
     steel::uart_send_string("entered an exception: ");
 
     /// TODO: do this only when debug is enabled
@@ -29,6 +31,9 @@ extern "C" void exception_entry(uint64 type, uint64 esr, uint64 elr) {
     // do nothing
     if(events[type] != nullptr)
         events[type](esr, elr);
+
+
+    asm volatile ("msr daifclr, #2");
 }
 
 extern "C" void setup_vector_table();

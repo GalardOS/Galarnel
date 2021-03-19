@@ -25,6 +25,9 @@ namespace drv {
             *DISABLE_ARM = 0xFFFFFFFF;
             *DISABLE1 = 0xFFFFFFFF;
             *DISABLE2 = 0xFFFFFFFF;
+
+            /// TODO: remove this hardcoded thingy
+            *ENABLE1 = 0b10;
         }
 
         void enable_irq(uint32 irq_num) {
