@@ -27,20 +27,43 @@ namespace drv {
             *DISABLE2 = 0xFFFFFFFF;
         }
 
+        void enable_irq(uint32 irq_num) {
+            uint32 bit_of_register = irq_num % 32;
+            uint32 register_of_irq = irq_num / 32;
 
-        void enable_arm_irq(uint32 irq) {
-            uint32 bit_of_register = (1 << irq);
-            *ENABLE_ARM = bit_of_register;
+            switch(register_of_irq) {
+                case 0: {
+                    *ENABLE_ARM = bit_of_register;
+                } break;
+                
+                case 1: {
+                    *ENABLE1 = bit_of_register;
+                } break;
+
+                case 2: {
+                    *ENABLE2 = bit_of_register;
+                } break;
+            }
         }
 
-        void enable_peripheral_irq(uint32 irq) {
-            uint32 bit_of_register = irq % 32;
+        void disable_irq(uint32 irq_num) {
+            uint32 bit_of_register = irq_num % 32;
+            uint32 register_of_irq = irq_num / 32;
 
-            if(irq <= 32) {
-                *ENABLE1 = bit_of_register;
-            } else {
-                *ENABLE2 = bit_of_register;
+            switch(register_of_irq) {
+                case 0: {
+                    *DISABLE_ARM = bit_of_register;
+                } break;
+                
+                case 1: {
+                    *DISABLE1 = bit_of_register;
+                } break;
+
+                case 2: {
+                    *DISABLE2 = bit_of_register;
+                } break;
             }
+
         }
     }
 }

@@ -1,0 +1,10 @@
+#pragma once 
+
+namespace drv {
+    namespace bcm2835auxuart {
+        void uart_init();
+        char uart_recv();
+        void uart_send(char c);
+        void uart_send_string(const char* str);
+    }
+}
