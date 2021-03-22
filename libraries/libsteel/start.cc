@@ -24,4 +24,6 @@ void gimme_all_your_lovin(void)
     }
 
     main(0, nullptr);
+
+    while(true)
 }

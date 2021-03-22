@@ -41,6 +41,4 @@ void main(int argc, char** argv) {
         value += 200000;
         *TIMER_C1 = value;
     }
-
-    while(true);
 }
