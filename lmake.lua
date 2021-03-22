@@ -54,5 +54,5 @@ function clean()
 end
 
 function run()
-    lmake_exec("qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial null -serial stdio -d int")
+    lmake_exec("qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial null -serial stdio")
 end

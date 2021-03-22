@@ -46,33 +46,69 @@ entry:
     mrs x2, elr_el1
     bl exception_entry
 
+    // Get back the context from the stack
     get_registers_from_stack
-
+    
+    // Re-enable the interrupts
+    msr daifclr, #2
     eret
 
 .macro ventry_sync
     .align 7
+    // Disable interrupts, not to interfere with the context saving
+    msr daifset, #2
+
     // Registers need to be saved before doing anything with
     // them
     save_registers_to_stack
+    
+    // Jump to the general entry with the exception type set in the 'x0'
+    // register (passed directly as a parameter to C++ function)
     mov x0, #0
     b entry
 .endm
 
 .macro ventry_int
     .align 7
+    // Disable interrupts, not to interfere with the context saving
+    msr daifset, #2
+
+    // Registers need to be saved before doing anything with
+    // them
+    save_registers_to_stack
+    
+    // Jump to the general entry with the exception type set in the 'x0'
+    // register (passed directly as a parameter to C++ function)
     mov x0, #1
     b entry
 .endm
 
 .macro ventry_fint
     .align 7
+    // Disable interrupts, not to interfere with the context saving
+    msr daifset, #2
+
+    // Registers need to be saved before doing anything with
+    // them
+    save_registers_to_stack
+    
+    // Jump to the general entry with the exception type set in the 'x0'
+    // register (passed directly as a parameter to C++ function)
     mov x0, #2
     b entry
 .endm
 
 .macro ventry_serr
     .align 7
+    // Disable interrupts, not to interfere with the context saving
+    msr daifset, #2
+
+    // Registers need to be saved before doing anything with
+    // them
+    save_registers_to_stack
+    
+    // Jump to the general entry with the exception type set in the 'x0'
+    // register (passed directly as a parameter to C++ function)
     mov x0, #3
     b entry
 .endm
