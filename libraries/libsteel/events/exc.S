@@ -44,6 +44,8 @@ entry:
     // of exception
     mrs x1, esr_el1
     mrs x2, elr_el1
+    mov x3, sp
+    mrs x4, spsr_el1
     bl exception_entry
 
     // Get back the context from the stack
@@ -145,3 +147,16 @@ setup_vector_table:
     adr x0, __vectors
     msr vbar_el1, x0 
     ret
+
+.global set_cpu_status_and_eret
+set_cpu_status_and_eret:
+    // Set the cpu system registers taken from parameters
+    mov sp, x0
+    msr elr_el1, x1
+    msr spsr_el1, x2
+
+    // Setup general purpose registers
+    get_registers_from_stack
+
+    // Return from exception
+    eret

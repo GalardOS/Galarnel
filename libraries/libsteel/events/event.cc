@@ -1,6 +1,6 @@
 #include "event.hh"
 
-#include "devices/mini_uart.hh"
+#include "../devices/mini_uart.hh"
  
 enum class exception_type : uint64 {
     synchronous = 0,
@@ -9,29 +9,24 @@ enum class exception_type : uint64 {
     serror = 3
 };
 
-void(*events[4])(uint64, uint64);
+void(*events[4])(steel::cpu_status);
 
-extern "C" void exception_entry(uint64 type, uint64 esr, uint64 elr) {
+extern "C" void exception_entry(uint64 type, uint64 esr, uint64 elr, uint64 sp, uint64 spsr) {
     steel::uart_send_string("entered an exception: ");
 
-    /// TODO: do this only when debug is enabled
-    if(type == 0) {
-        steel::uart_send_string("synchronous\r\n");
-    } else if(type == 1) {
-        steel::uart_send_string("interrupt\r\n");
-    } else if(type == 2) {
-        steel::uart_send_string("finterrupt\r\n");
-    } else {
-        steel::uart_send_string("serror\r\n");
-    }
+    steel::cpu_status status;
+    status.pc = elr;
+    status.sp = sp;
+    status.spsr = spsr;
 
     // Call the event given by the user if it exists, if not,
     // do nothing
     if(events[type] != nullptr)
-        events[type](esr, elr);
+        events[type](status);
 }
 
 extern "C" void setup_vector_table();
+extern "C" void set_cpu_status_and_eret(uint64 sp, uint64 pc, uint64 spsr);
 
 namespace steel {
     void __event_initialize() {
@@ -50,5 +45,9 @@ namespace steel {
     void event(exception_type type, event_handler handler) {
         auto index = static_cast<uint64>(type);
         events[index] = handler;
+    }
+
+    void return_from_event(const cpu_status& status) {
+        set_cpu_status_and_eret(status.sp, status.pc, status.spsr);
     }
 }

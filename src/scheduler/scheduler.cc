@@ -1,6 +1,7 @@
 #include "scheduler.hh"
 
 #include "drivers/bcm2835intc.hh"
+#include "drivers/bcm2835auxuart.hh"
 
 #include "libsteel/events/event.hh"
 
@@ -13,13 +14,17 @@
 #define TIMER_C3        ((volatile uint32*)(0x3F000000+0x00003018))
 
 static uint64 value;
-static void timer_handler(uint64, uint64) {
+static void timer_handler(steel::cpu_status state) {
+    drv::bcm2835auxuart::send_string("taimer\r\n");
+
     value += 200000;
     *TIMER_C1 = value;
 
     // Send acknowledgment to timer
     uint32 acknowledgment = 1 << 1;
     *TIMER_CS = acknowledgment;
+
+    steel::return_from_event(state);
 }
 
 namespace scheduler {

@@ -29,20 +29,9 @@ void main(int argc, char** argv) {
     
     drv::bcm2835intc::initialize();
 
-    //{
-    //    asm volatile ("msr daifclr, #2");
-
-    //    // Enable the arm timer interrupts
-    //    drv::bcm2835intc::enable_irq(33);
-    //    steel::event(steel::exception_type::interrupt, timer_handler);
-
-    //    // Initialize the timer counter
-    //    value = *TIMER_C0;
-    //    value += 200000;
-    //    *TIMER_C1 = value;
-    //}
-
     scheduler::initialize();
 
-    while(true);
+    while(true) {
+        //drv::bcm2835auxuart::send('a');
+    }
 }
