@@ -1,6 +1,7 @@
 #pragma once
 
 #include "libsteel/common.hh"
+#include "libsteel/events/event.hh"
 
 namespace scheduler {
     typedef void(*kernel_function)();
@@ -14,11 +15,12 @@ namespace scheduler {
 
     struct process {
         proc_type process_type;
-        // cpu_context context;
+        steel::cpu_status status;
     };
-
 
     void initialize();
 
     pid add_kernel_process(kernel_function exec);
+
+    bool has_finalized();
 }

@@ -14,15 +14,6 @@
 #define TIMER_C2        ((volatile uint32*)(0x3F000000+0x00003014))
 #define TIMER_C3        ((volatile uint32*)(0x3F000000+0x00003018))
 
-//uint32 value;
-//void timer_handler(uint64, uint64) {
-//    value += 200000;
-//    *TIMER_C1 = value;
-//    // Send acknowledgment to timer
-//    uint32 acknowledgment = 1 << 1;
-//    *TIMER_CS = acknowledgment;
-//}
-
 void main(int argc, char** argv) {
     drv::bcm2835auxuart::init();
     drv::bcm2835auxuart::send_string("Jelou from iquernel!!\r\n");
@@ -32,6 +23,6 @@ void main(int argc, char** argv) {
     scheduler::initialize();
 
     while(true) {
-        //drv::bcm2835auxuart::send('a');
+        drv::bcm2835auxuart::send('a');
     }
 }
