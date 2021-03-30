@@ -58,6 +58,7 @@ void bcm2835auxuart_initialize() {
 }
 
 void bcm2835auxuart_send_char(char character) {
+    /// TODO: look at this wtf
     while(!(*AUX_MU_LSR_REG & 0x20));
         *AUX_MU_IO_REG = character; 
 }
