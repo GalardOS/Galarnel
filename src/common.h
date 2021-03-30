@@ -13,4 +13,6 @@ typedef short          int16;
 typedef int            int32;
 typedef long           int64;
 
+#define NULL ((void*)0)
+
 #endif // COMMON_H
