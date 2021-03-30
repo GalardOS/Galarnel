@@ -1,4 +1,5 @@
-#pragma once
+#ifndef COMMON_H
+#define COMMON_H
 
 typedef unsigned char byte;
 typedef char sbyte;
@@ -12,4 +13,4 @@ typedef short          int16;
 typedef int            int32;
 typedef long           int64;
 
-#define BIT(x) (1 << (x))
+#endif // COMMON_H
