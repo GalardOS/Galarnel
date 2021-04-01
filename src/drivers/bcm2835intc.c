@@ -32,17 +32,15 @@ void bcm2835intc_enable(int irqid) {
     uint32 register_of_irq = irqid / 32;
 
     switch(register_of_irq) {
-        case 0: {
+        case 0:
             *ENABLE_ARM = bit_of_register;
-        } break;
-        
-        case 1: {
+            break;
+        case 1:
             *ENABLE1 = bit_of_register;
-        } break;
-
-        case 2: {
+            break;
+        case 2:
             *ENABLE2 = bit_of_register;
-        } break;
+            break;
     }
 }
 

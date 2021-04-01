@@ -12,9 +12,6 @@ void gimme_all_your_lovin() {
     // Initialize the ARM exceptions
     setup_exceptions();
 
-    // Enable the interrupt controller
-    bcm2835intc_initialize();
-
     // Call the main function from the kernel
     main();
 

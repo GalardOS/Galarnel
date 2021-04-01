@@ -4,10 +4,10 @@
 
 extern void set_cpu_status_and_eret(uint64 sp, uint64 pc, uint64 spsr);
 
-void(*synchronous_handler)(struct cpu_status);
-void(*interrupt_handler)(struct cpu_status);
-void(*finterrupt_handler)(struct cpu_status);
-void(*serror_handler)(struct cpu_status);
+static void(*synchronous_handler)(struct cpu_status);
+static void(*interrupt_handler)(struct cpu_status);
+static void(*finterrupt_handler)(struct cpu_status);
+static void(*serror_handler)(struct cpu_status);
 
 void exception_entry(uint64 type, uint64 esr, uint64 elr, uint64 sp, uint64 spsr) {
     // Create the cpu status from the data given by the 
