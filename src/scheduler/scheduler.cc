@@ -13,9 +13,22 @@
 #define TIMER_C2        ((volatile uint32*)(0x3F000000+0x00003014))
 #define TIMER_C3        ((volatile uint32*)(0x3F000000+0x00003018))
 
+constexpr uint32 MAX_PROCESSES = 100;
+scheduler::process processes[MAX_PROCESSES];
+uint32 num_processes;
+
+uint32 running_process_index;
+
 static uint64 value;
 static void timer_handler(steel::cpu_status state) {
     drv::bcm2835auxuart::send_string("taimer\r\n");
+
+    // Save the current running program status
+    processes[running_process_index].context = state;
+
+    // Change to the next process
+    running_process_index = (running_process_index + 1) % num_processes;
+    steel::cpu_status next_status = processes[running_process_index].context;
 
     value += 100000;
     *TIMER_C1 = value;
@@ -24,7 +37,7 @@ static void timer_handler(steel::cpu_status state) {
     uint32 acknowledgment = 1 << 1;
     *TIMER_CS = acknowledgment;
 
-    steel::return_from_event(state);
+    steel::return_from_event(next_status);
 }
 
 static void enable_preemption() {
@@ -41,13 +54,9 @@ static void disable_preemption() {
 }
 
 namespace scheduler {
-    constexpr uint32 MAX_PROCESSES = 100;
-    process processes[MAX_PROCESSES];
-    uint32 num_processes;
+
 
     void initialize() {
-        num_processes = 0;
-
         asm volatile ("msr daifclr, #2");
 
         // Enable the system timer interrupts and set the timer_handler
@@ -55,6 +64,15 @@ namespace scheduler {
         /// TODO: use some kind of interrupt manager
         drv::bcm2835intc::enable_irq(33);
         steel::event(steel::exception_type::interrupt, timer_handler);
+
+        // Add the main process to the list, so it is not lost
+        process main_process;
+        main_process.process_type = proc_type::kernel;
+        processes[0] = main_process;
+        num_processes = 1;
+
+        // Set the first process as the running process
+        running_process_index = 0;
 
         // Initialize the timer counter
         value = *TIMER_C0;
@@ -83,5 +101,9 @@ namespace scheduler {
         num_processes++;
         enable_preemption();
         return num_processes - 1;
+    }
+
+    bool has_finalized() {
+        return num_processes == 0;
     }
 }

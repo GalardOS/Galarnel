@@ -18,8 +18,9 @@ namespace scheduler {
         steel::cpu_status context;
     };
 
-
     void initialize();
 
     pid add_kernel_process(kernel_function exec);
+
+    bool has_finalized();
 }
