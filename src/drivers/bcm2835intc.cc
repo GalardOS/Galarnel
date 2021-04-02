@@ -27,11 +27,11 @@ namespace drv {
             *DISABLE2 = 0xFFFFFFFF;
 
             /// TODO: remove this hardcoded thingy
-            *ENABLE1 = 0b10;
+            //*ENABLE1 = 0b10;
         }
 
         void enable_irq(uint32 irq_num) {
-            uint32 bit_of_register = irq_num % 32;
+            uint32 bit_of_register = 1 << (irq_num % 32);
             uint32 register_of_irq = irq_num / 32;
 
             switch(register_of_irq) {
@@ -50,7 +50,7 @@ namespace drv {
         }
 
         void disable_irq(uint32 irq_num) {
-            uint32 bit_of_register = irq_num % 32;
+            uint32 bit_of_register = 1 << (irq_num % 32);
             uint32 register_of_irq = irq_num / 32;
 
             switch(register_of_irq) {

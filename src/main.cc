@@ -23,6 +23,17 @@
 //    *TIMER_CS = acknowledgment;
 //}
 
+void inline_delay(uint64 count);
+
+void async_process() {
+    while(true) {
+        drv::bcm2835auxuart::send('b');
+
+        inline_delay(0xFFFF);
+    }
+
+}
+
 void main(int argc, char** argv) {
     drv::bcm2835auxuart::init();
     drv::bcm2835auxuart::send_string("Jelou from iquernel!!\r\n");
@@ -31,7 +42,10 @@ void main(int argc, char** argv) {
 
     scheduler::initialize();
 
+    scheduler::add_kernel_process(async_process);
+
     while(true) {
-        //drv::bcm2835auxuart::send('a');
+        drv::bcm2835auxuart::send('a');
+        inline_delay(0xFFFF);
     }
 }
