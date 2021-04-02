@@ -28,7 +28,7 @@ void bcm2835intc_initialize() {
 }
 
 void bcm2835intc_enable(int irqid) {
-    uint32 bit_of_register = irqid % 32;
+    uint32 bit_of_register = 1 << (irqid % 32);
     uint32 register_of_irq = irqid / 32;
 
     switch(register_of_irq) {
@@ -45,7 +45,7 @@ void bcm2835intc_enable(int irqid) {
 }
 
 void bcm2835intc_disable(int irqid) {
-    uint32 bit_of_register = irqid % 32;
+    uint32 bit_of_register = 1 << (irqid % 32);
     uint32 register_of_irq = irqid / 32;
 
     switch(register_of_irq) {
@@ -61,5 +61,8 @@ void bcm2835intc_disable(int irqid) {
             *DISABLE2 = bit_of_register;
         } break;
     }
+}
 
+int bcm2835intc_pending() {
+    return 0;
 }
