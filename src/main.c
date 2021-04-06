@@ -2,12 +2,26 @@
 #include "drivers/bcm2835intc.h"
 
 #include "interrutps/exceptions.h"
+#include "interrutps/intman.h"
 
-void synchronous_handler(struct cpu_status context) {
-    bcm2835auxuart_send_string("Synchronous interrupt!!\r\n");
+#include "scheduler/scheduler.h"
 
-    context.pc += 4;
-    eret_with_context(context);
+#include "aarch64.h"
+
+void async_job(void* params) {
+    while(1) {
+        // Wait whatever seconds
+        int i = 0;
+        while(i < 0xFFFF) {
+            i++;
+            asm volatile("nop");
+        }
+
+        bcm2835auxuart_send_char('c');
+        
+        // Yield system call
+        syscall(0);
+    }
 }
 
 void main() {
@@ -17,9 +31,9 @@ void main() {
     bcm2835intc_initialize();
     asm volatile ("msr daifclr, #2");
 
-    set_exception_handler(EXCEPTION_SYNCHRONOUS, synchronous_handler);
+    intman_initialize();
 
-    asm volatile("brk #7");
+    initialize_scheduler();
 
     while(1) {
         // Wait whatever seconds
@@ -30,5 +44,8 @@ void main() {
         }
 
         bcm2835auxuart_send_char('a');
+        
+        // Yield system call
+        syscall(0);
     }
 }

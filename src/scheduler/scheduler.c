@@ -1,21 +1,42 @@
 #include "scheduler.h"
 
-#include "drivers/bcm2835intc.h"
+#include "drivers/bcm2835auxuart.h"
 #include "memory/heap.h"
 
-#define TIMER_CS   ((volatile uint32*)(0x3F000000+0x00003000))
-#define TIMER_CLO  ((volatile uint32*)(0x3F000000+0x00003004))
-#define TIMER_CHI  ((volatile uint32*)(0x3F000000+0x00003008))
-#define TIMER_C0   ((volatile uint32*)(0x3F000000+0x0000300C))
-#define TIMER_C1   ((volatile uint32*)(0x3F000000+0x00003010))
-#define TIMER_C2   ((volatile uint32*)(0x3F000000+0x00003014))
-#define TIMER_C3   ((volatile uint32*)(0x3F000000+0x00003018))
+#include "interrutps/intman.h"
 
 struct process_control_block pcbs[100];
 uint32 num_pcbs;
+uint32 running_pcb_index;
+
+static void sys_yield(struct cpu_status status) {
+    // Necesary for system calls, as returning to the same
+    // pc would enter into a loop of syscall return to syscall
+    status.pc += 4;
+
+    // Save the currently running process' cpu_status to the
+    // pcbs list
+    pcbs[running_pcb_index].status = status;
+
+    // Select the next process to run and start running it
+    /// TODO: check if is a user process, and handle it how it should
+    running_pcb_index = (running_pcb_index + 1) % 100;
+    eret_with_context(pcbs[running_pcb_index].status);
+}
 
 void initialize_scheduler() {
-    num_pcbs = 0;
+
+    // Add the yield system call to the list
+    intman_add_synchronous(0, sys_yield);
+
+    // Add the main thread as a kernel process so it is not lost
+    struct process_control_block main;
+    main.type = PROCESS_TYPE_KERNEL;
+    pcbs[0] = main;
+    num_pcbs = 1;
+    
+    // Set the added main thread as the currently running process
+    running_pcb_index = 0;
 }
 
 void add_kernel_proces(void(*function)(void* params)) {
@@ -27,7 +48,7 @@ void add_kernel_proces(void(*function)(void* params)) {
     pcb.type = PROCESS_TYPE_KERNEL;
     pcb.status.spsr = 0;
     pcb.status.sp = (uint64)new_stack;
-    // pcb.status.pc = berga;
+    pcb.status.pc = (uint64)function;
 
     // Add the created PCB to the list
     pcbs[num_pcbs] = pcb;

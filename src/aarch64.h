@@ -3,6 +3,8 @@
 
 #include "common.h"
 
+void syscall(uint32 sys_number);
+
 uint64 esr_el1();
 
 #endif // AARCH64_H

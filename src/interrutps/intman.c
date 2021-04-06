@@ -25,7 +25,13 @@ static void synchronous_handler(struct cpu_status status) {
         case 0b100101: bcm2835auxuart_send_string("Data abort, same EL\r\n"); break;
         case 0b100110: bcm2835auxuart_send_string("Stack alignment fault\r\n"); break;
         case 0b101100: bcm2835auxuart_send_string("Floating point\r\n"); break;
-        default: bcm2835auxuart_send_string("Unknown\r\n"); break;
+        
+        // We will threat this as a system call, as svc instruction jumps to el2
+        // and that would be painful to handle.
+        default:
+            bcm2835auxuart_send_string("System call\r\n");
+            if(synchronous_handlers[0] != NULL) synchronous_handlers[0](status);
+            break;
     }
 }
 
@@ -35,6 +41,7 @@ static void interrupt_handler(struct cpu_status status) {
 }
 
 void intman_initialize() {
+    // Setup the exception handlers
     set_exception_handler(EXCEPTION_SYNCHRONOUS, synchronous_handler);
     set_exception_handler(EXCEPTION_INTERRUPT, interrupt_handler);
 }
