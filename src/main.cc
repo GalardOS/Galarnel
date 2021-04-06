@@ -24,6 +24,14 @@ void async_process() {
     }
 }
 
+void async_process2() {
+    while(true) {
+        drv::bcm2835auxuart::send('c');
+
+        inline_delay(0xFFF);
+    }
+}
+
 void main(int argc, char** argv) {
     drv::bcm2835auxuart::init();
     drv::bcm2835auxuart::send_string("Jelou from iquernel!!\r\n");
@@ -32,6 +40,7 @@ void main(int argc, char** argv) {
 
     scheduler::initialize();
 
+    scheduler::add_kernel_process(async_process2);
     scheduler::add_kernel_process(async_process);
 
     while(true) {
