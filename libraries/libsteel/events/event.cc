@@ -12,7 +12,25 @@ enum class exception_type : uint64 {
 void(*events[4])(steel::cpu_status);
 
 extern "C" void exception_entry(uint64 type, uint64 esr, uint64 elr, uint64 sp, uint64 spsr) {
-    steel::uart_send_string("entered an exception: ");
+    //steel::uart_send_string("entered an exception: ");
+    //auto except = static_cast<exception_type>(type);
+    //switch(except) {
+    //    case exception_type::synchronous:
+    //        steel::uart_send_string("synchronous\r\n");
+    //        while(true);
+    //        break;
+    //    case exception_type::interrupt:
+    //        steel::uart_send_string("interrupt\r\n");
+    //        break;
+    //    case exception_type::finterrupt:
+    //        steel::uart_send_string("finterrupt\r\n");
+    //        while(true);
+    //        break;
+    //    case exception_type::serror:
+    //        steel::uart_send_string("serror\r\n");
+    //        while(true);
+    //        break;
+    //}
 
     steel::cpu_status status;
     status.pc = elr;

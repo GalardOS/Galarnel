@@ -20,42 +20,40 @@ uint32 num_processes;
 uint32 running_process_index;
 
 static uint64 value;
-static void timer_handler(steel::cpu_status state) {
-    drv::bcm2835auxuart::send_string("taimer\r\n");
-
-    // Save the current running program status
-    processes[running_process_index].context = state;
-
-    // Change to the next process
-    running_process_index = (running_process_index + 1) % num_processes;
-    steel::cpu_status next_status = processes[running_process_index].context;
-
-    value += 100000;
-    *TIMER_C1 = value;
-
-    // Send acknowledgment to timer
-    uint32 acknowledgment = 1 << 1;
-    *TIMER_CS = acknowledgment;
-
-    steel::return_from_event(next_status);
-}
 
 static void enable_preemption() {
     drv::bcm2835intc::enable_irq(33);
 
     // Initialize the timer counter
-    value = *TIMER_C0;
-    value += 100000;
+    value += 200000;
     *TIMER_C1 = value;
+    
+    // Send the acknowledgment 
+    uint32 acknowledgment = 1 << 1;
+    *TIMER_CS = acknowledgment;
 }
 
 static void disable_preemption() {
     drv::bcm2835intc::disable_irq(33);
 }
 
+static void timer_handler(steel::cpu_status state) {
+    disable_preemption();
+    
+    drv::bcm2835auxuart::send_string("Timer handler\r\n");
+
+    // Save the current running program status
+    processes[running_process_index].context = state;
+
+    // Change to the next process
+    running_process_index = (running_process_index + 1) % num_processes;
+
+    enable_preemption();
+   
+    steel::return_from_event(processes[running_process_index].context);
+}
+
 namespace scheduler {
-
-
     void initialize() {
         asm volatile ("msr daifclr, #2");
 
@@ -64,6 +62,7 @@ namespace scheduler {
         /// TODO: use some kind of interrupt manager
         drv::bcm2835intc::enable_irq(33);
         steel::event(steel::exception_type::interrupt, timer_handler);
+        steel::event(steel::exception_type::synchronous, timer_handler);
 
         // Add the main process to the list, so it is not lost
         process main_process;
@@ -76,15 +75,11 @@ namespace scheduler {
 
         // Initialize the timer counter
         value = *TIMER_C0;
-        value += 100000;
+        value += 200000;
         *TIMER_C1 = value;
     }
 
     pid add_kernel_process(kernel_function exec) {
-        // Imporant for not interrupting the creation
-        // process
-        disable_preemption();
-
         process proc;
         proc.process_type = proc_type::kernel;
 
@@ -96,10 +91,17 @@ namespace scheduler {
 
         proc.context.pc = (uint64)exec;
 
+        // Imporant for not interrupting the creation
+        // process
+        //disable_preemption();
+
         // Add the process to the processes list
         processes[num_processes] = proc;
         num_processes++;
-        enable_preemption();
+        
+        // Re-enable preemption
+        //enable_preemption();
+        
         return num_processes - 1;
     }
 
