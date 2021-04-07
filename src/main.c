@@ -46,6 +46,6 @@ void main() {
         bcm2835auxuart_send_char('a');
         
         // Yield system call
-        syscall(0);
+        //syscall(0);
     }
 }
