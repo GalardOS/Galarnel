@@ -8,5 +8,7 @@ namespace drv {
 
         void enable_irq(uint32 irq_num);
         void disable_irq(uint32 irq_num);
+
+        void acknowledge();
     }
 }

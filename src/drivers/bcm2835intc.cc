@@ -69,4 +69,10 @@ namespace drv {
 
         }
     }
+
+    void acknowledge() {
+        *PENDING1 = 0;
+        *PENDING2 = 0;
+        *PENDING_ARM = 0;
+    }
 }
