@@ -21,6 +21,7 @@ void async_process() {
         drv::bcm2835auxuart::send('b');
 
         inline_delay(0xFFF);
+        asm volatile("brk 7");
     }
 }
 
@@ -29,6 +30,7 @@ void async_process2() {
         drv::bcm2835auxuart::send('c');
 
         inline_delay(0xFFF);
+        asm volatile("brk 7");
     }
 }
 
@@ -43,8 +45,10 @@ void main(int argc, char** argv) {
     scheduler::add_kernel_process(async_process2);
     scheduler::add_kernel_process(async_process);
 
+
     while(true) {
         drv::bcm2835auxuart::send('a');
         inline_delay(0xFFFF);
+        asm volatile("brk 7");
     }
 }

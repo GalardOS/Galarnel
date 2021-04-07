@@ -39,8 +39,8 @@ static void disable_preemption() {
 
 static void timer_handler(steel::cpu_status state) {
     disable_preemption();
-    
-    drv::bcm2835auxuart::send_string("Timer handler\r\n");
+
+    state.pc += 4;
 
     // Save the current running program status
     processes[running_process_index].context = state;
@@ -74,7 +74,7 @@ namespace scheduler {
         running_process_index = 0;
 
         // Initialize the timer counter
-        value = *TIMER_C0;
+        value = *TIMER_CLO;
         value += 200000;
         *TIMER_C1 = value;
     }
