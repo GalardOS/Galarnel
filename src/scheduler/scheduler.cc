@@ -88,7 +88,7 @@ namespace scheduler {
         // stack.
         proc.context.sp = (uint64)heap::allocate(4 * 1024);
         proc.context.sp += 256;
-
+        proc.context.spsr = processes[0].context.spsr;
         proc.context.pc = (uint64)exec;
 
         // Imporant for not interrupting the creation
