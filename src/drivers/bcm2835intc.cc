@@ -66,13 +66,12 @@ namespace drv {
                     *DISABLE2 = bit_of_register;
                 } break;
             }
-
         }
-    }
 
-    void acknowledge() {
-        *PENDING1 = 0;
-        *PENDING2 = 0;
-        *PENDING_ARM = 0;
+        void acknowledge() {
+            *PENDING1 = 0;
+            *PENDING2 = 0;
+            *PENDING_ARM = 0;
+        }
     }
 }
