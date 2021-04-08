@@ -40,7 +40,7 @@ static void disable_preemption() {
 static void timer_handler(steel::cpu_status state) {
     disable_preemption();
 
-    state.pc += 4;
+    //state.pc += 4;
 
     // Save the current running program status
     processes[running_process_index].context = state;
@@ -88,19 +88,18 @@ namespace scheduler {
         // stack.
         proc.context.sp = (uint64)heap::allocate(4 * 1024);
         proc.context.sp += 256;
-        proc.context.spsr = processes[0].context.spsr;
         proc.context.pc = (uint64)exec;
 
         // Imporant for not interrupting the creation
         // process
-        //disable_preemption();
+        disable_preemption();
 
         // Add the process to the processes list
         processes[num_processes] = proc;
         num_processes++;
         
         // Re-enable preemption
-        //enable_preemption();
+        enable_preemption();
         
         return num_processes - 1;
     }
