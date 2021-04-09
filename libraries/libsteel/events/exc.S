@@ -158,5 +158,8 @@ set_cpu_status_and_eret:
     // Setup general purpose registers
     get_registers_from_stack
 
+
+    msr daifclr, #2
+
     // Return from exception
     eret
