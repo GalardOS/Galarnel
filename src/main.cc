@@ -4,6 +4,8 @@
 #include "drivers/bcm2835intc.hh"
 #include "drivers/bcm2835auxuart.hh"
 
+#include "util/printf.hh"
+
 #include "scheduler/scheduler.hh"
 
 #define TIMER_CS        ((volatile uint32*)(0x3F000000+0x00003000))
@@ -37,7 +39,10 @@ void async_process2() {
 void main(int argc, char** argv) {
     drv::bcm2835auxuart::init();
     drv::bcm2835auxuart::send_string("Jelou from iquernel!!\r\n");
-    
+
+    // Initialize the printf library
+    __init_printf(nullptr, [](void* p, char c){ drv::bcm2835auxuart::send(c); });
+
     drv::bcm2835intc::initialize();
 
     scheduler::initialize();
