@@ -153,11 +153,10 @@ set_cpu_status_and_eret:
     // Set the cpu system registers taken from parameters
     mov sp, x0
     msr elr_el1, x1
-    //msr spsr_el1, x2
+    msr spsr_el1, x2
 
     // Setup general purpose registers
     get_registers_from_stack
-
 
     msr daifclr, #2
 

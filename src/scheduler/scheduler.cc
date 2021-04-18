@@ -5,6 +5,8 @@
 
 #include "memory/heap.hh"
 
+#include "aarch64.hh"
+
 #define TIMER_CS        ((volatile uint32*)(0x3F000000+0x00003000))
 #define TIMER_CLO       ((volatile uint32*)(0x3F000000+0x00003004))
 #define TIMER_CHI       ((volatile uint32*)(0x3F000000+0x00003008))
@@ -67,6 +69,7 @@ namespace scheduler {
         // Add the main process to the list, so it is not lost
         process main_process;
         main_process.process_type = proc_type::kernel;
+        main_process.context.spsr = aarch64::spsr();
         processes[0] = main_process;
         num_processes = 1;
 
@@ -89,6 +92,7 @@ namespace scheduler {
         proc.context.sp = (uint64)heap::allocate(4 * 1024);
         proc.context.sp += 256;
         proc.context.pc = (uint64)exec;
+        proc.context.spsr = processes[0].context.spsr;
 
         // Imporant for not interrupting the creation
         // process
