@@ -55,6 +55,12 @@ static void timer_handler(steel::cpu_status state) {
     steel::return_from_event(processes[running_process_index].context);
 }
 
+static void synch_handler(steel::cpu_status state) {
+    state.pc += 4;
+
+    timer_handler(state);
+}
+
 namespace scheduler {
     void initialize() {
         asm volatile ("msr daifclr, #2");
@@ -64,7 +70,7 @@ namespace scheduler {
         /// TODO: use some kind of interrupt manager
         drv::bcm2835intc::enable_irq(33);
         steel::event(steel::exception_type::interrupt, timer_handler);
-        steel::event(steel::exception_type::synchronous, timer_handler);
+        steel::event(steel::exception_type::synchronous, synch_handler);
 
         // Add the main process to the list, so it is not lost
         process main_process;
