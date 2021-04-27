@@ -7,6 +7,8 @@
 
 #include "aarch64.hh"
 
+
+
 #define TIMER_CS        ((volatile uint32*)(0x3F000000+0x00003000))
 #define TIMER_CLO       ((volatile uint32*)(0x3F000000+0x00003004))
 #define TIMER_CHI       ((volatile uint32*)(0x3F000000+0x00003008))
@@ -96,7 +98,7 @@ namespace scheduler {
         // is moved 256 bytes beacouse all the registers are stored in the
         // stack.
         proc.context.sp = (uint64)heap::allocate(4 * 1024);
-        proc.context.sp += 256;
+        proc.context.sp -= 256 + 8;
         proc.context.pc = (uint64)exec;
         proc.context.spsr = 0b0101;
 

@@ -43,6 +43,9 @@ void main(int argc, char** argv) {
     // Initialize the printf library
     __init_printf(nullptr, [](void* p, char c){ drv::bcm2835auxuart::send(c); });
 
+    printf("sizeof(uint64) = %d\r\n", sizeof(uint64));
+    //while(true);
+
     drv::bcm2835intc::initialize();
 
     scheduler::initialize();
