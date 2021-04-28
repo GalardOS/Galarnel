@@ -16,6 +16,8 @@ namespace scheduler {
     struct process {
         proc_type process_type;
         steel::cpu_status context;
+
+        void* stack_buffer;
     };
 
     void initialize();

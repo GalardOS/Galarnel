@@ -97,8 +97,8 @@ namespace scheduler {
         // Allocate the stack for the new process. The stack pointer
         // is moved 256 bytes beacouse all the registers are stored in the
         // stack.
-        proc.context.sp = (uint64)heap::allocate(4 * 1024);
-        proc.context.sp -= 256 + 8;
+        proc.stack_buffer = heap::allocate(4 * 1024);
+        proc.context.sp = (uint64)(proc.stack_buffer) + 4 * 1024 - 1;
         proc.context.pc = (uint64)exec;
         proc.context.spsr = 0b0101;
 
