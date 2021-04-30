@@ -4,6 +4,7 @@
 #include "drivers/bcm2835auxuart.hh"
 
 #include "memory/heap.hh"
+#include "util/printf.hh"
 
 #include "aarch64.hh"
 
@@ -44,6 +45,8 @@ static void timer_handler(steel::cpu_status state) {
 
     // Save the current running program status
     processes[running_process_index].context = state;
+
+    printf("\r\nCHANGING FROM PID %d TO PID %d\r\n", running_process_index, (running_process_index + 1) % num_processes);
 
     // Change to the next process
     running_process_index = (running_process_index + 1) % num_processes;

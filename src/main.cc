@@ -54,8 +54,8 @@ void main(int argc, char** argv) {
 
     scheduler::initialize();
 
-    scheduler::add_kernel_process(async_process2);
     scheduler::add_kernel_process(async_process);
+    scheduler::add_kernel_process(async_process2);
 
     int i = 0;
     while(true) {
