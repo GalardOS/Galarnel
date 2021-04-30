@@ -7,8 +7,6 @@
 
 #include "aarch64.hh"
 
-
-
 #define TIMER_CS        ((volatile uint32*)(0x3F000000+0x00003000))
 #define TIMER_CLO       ((volatile uint32*)(0x3F000000+0x00003004))
 #define TIMER_CHI       ((volatile uint32*)(0x3F000000+0x00003008))
@@ -43,8 +41,6 @@ static void disable_preemption() {
 
 static void timer_handler(steel::cpu_status state) {
     disable_preemption();
-
-    //state.pc += 4;
 
     // Save the current running program status
     processes[running_process_index].context = state;

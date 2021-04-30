@@ -18,21 +18,25 @@
 
 void inline_delay(uint64 count);
 
-void async_process() {
-    while(true) {
-        drv::bcm2835auxuart::send('b');
+constexpr int TIME_TO_WAIT = 0xFFFF;
 
-        inline_delay(0xFFF);
-        //asm volatile("brk 7");
+void async_process() {
+    int i = 0;
+    while(true) {
+        i++;
+
+        inline_delay(TIME_TO_WAIT);
+        printf("async_process1: %d\r\n", i);
     }
 }
 
 void async_process2() {
+    int i = 0;
     while(true) {
-        drv::bcm2835auxuart::send('c');
+        i++;
 
-        inline_delay(0xFFF);
-        //asm volatile("brk 7");
+        inline_delay(TIME_TO_WAIT);
+        printf("async_process2: %d\r\n", i);
     }
 }
 
@@ -50,12 +54,14 @@ void main(int argc, char** argv) {
 
     scheduler::initialize();
 
-    //scheduler::add_kernel_process(async_process2);
+    scheduler::add_kernel_process(async_process2);
     scheduler::add_kernel_process(async_process);
 
+    int i = 0;
     while(true) {
-        drv::bcm2835auxuart::send('a');
-        inline_delay(0xFFFF);
-        //asm volatile("brk 7");
+        i++;
+
+        inline_delay(TIME_TO_WAIT);
+        printf("main: %d\r\n", i);
     }
 }
