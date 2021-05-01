@@ -69,6 +69,9 @@ namespace drv {
         }
 
         void acknowledge() {
+            // Set all the pending bits to zero. This is a bit dirty
+            // but as no nested interrupts are supported this does 
+            // not harm.
             *PENDING1 = 0;
             *PENDING2 = 0;
             *PENDING_ARM = 0;

@@ -25,22 +25,27 @@ uint32 running_process_index;
 static uint64 value;
 
 static void enable_preemption() {
+    // Enable the interrupt routing from the system timer
     drv::bcm2835intc::enable_irq(33);
 
-    // Initialize the timer counter
+    // Initialize the timer value to a random number (not gonna lie)
     value += 200000;
     *TIMER_C1 = value;
     
-    // Send the acknowledgment 
+    // Send an acknowledgment in case a previous interrupt
+    // was not handled properly or not handled at all
     uint32 acknowledgment = 1 << 1;
     *TIMER_CS = acknowledgment;
 }
 
 static void disable_preemption() {
+    // Disable routing of the interrupt
     drv::bcm2835intc::disable_irq(33);
 }
 
 static void timer_handler(steel::cpu_status state) {
+    // Disable preemption so that process switch does not 
+    // occur while a process switch is happening
     disable_preemption();
 
     // Save the current running program status
@@ -51,14 +56,19 @@ static void timer_handler(steel::cpu_status state) {
     // Change to the next process
     running_process_index = (running_process_index + 1) % num_processes;
 
+    // Reenable the timer
     enable_preemption();
-   
+    
+    // Return with the new context
     steel::return_from_event(processes[running_process_index].context);
 }
 
 static void synch_handler(steel::cpu_status state) {
+    // The program counter advances one instruction not to repeat
+    // the instruction that caused the exception
     state.pc += 4;
 
+    // Execute the process switching
     timer_handler(state);
 }
 
@@ -83,33 +93,34 @@ namespace scheduler {
         // Set the first process as the running process
         running_process_index = 0;
 
-        // Initialize the timer counter
+        // Initialize the timer with a random value (not gonna lie)
         value = *TIMER_CLO;
         value += 200000;
         *TIMER_C1 = value;
     }
 
     pid add_kernel_process(kernel_function exec) {
+        // Set the process type to a kernel process
         process proc;
         proc.process_type = proc_type::kernel;
 
         // Allocate the stack for the new process. The stack pointer
         // is moved 256 bytes beacouse all the registers are stored in the
         // stack.
+        // IMPORTANT: the stack pointer should point to the top of the buffer
+        //            and not the start (stack grows down!!!!)
         proc.stack_buffer = heap::allocate(4 * 1024);
         proc.context.sp = (uint64)(proc.stack_buffer) + 4 * 1024 - 1;
         proc.context.pc = (uint64)exec;
         proc.context.spsr = 0b0101;
 
-        // Imporant for not interrupting the creation
-        // process
+        // Important that this addition process is not interrupted 
         disable_preemption();
 
         // Add the process to the processes list
         processes[num_processes] = proc;
         num_processes++;
         
-        // Re-enable preemption
         enable_preemption();
         
         return num_processes - 1;

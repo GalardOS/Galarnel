@@ -54,6 +54,7 @@ void main(int argc, char** argv) {
 
     scheduler::initialize();
 
+    // Add two random processes for testing purposes
     scheduler::add_kernel_process(async_process);
     scheduler::add_kernel_process(async_process2);
 
