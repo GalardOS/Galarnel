@@ -1,7 +1,5 @@
 #include "event.hh"
 
-#include "../devices/mini_uart.hh"
- 
 enum class exception_type : uint64 {
     synchronous = 0,
     interrupt = 1,

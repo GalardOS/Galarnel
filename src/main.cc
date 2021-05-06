@@ -1,4 +1,3 @@
-#include "libsteel/devices/mini_uart.hh"
 #include "libsteel/events/event.hh"
 
 #include "drivers/bcm2835intc.hh"

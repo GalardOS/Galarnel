@@ -1,5 +1,3 @@
-#include "devices/mini_uart.hh"
-
 extern void main(int argc, char** argv);
 
 typedef void (*ctor)();
@@ -13,9 +11,6 @@ namespace steel {
 extern "C" 
 void gimme_all_your_lovin(void)
 {
-    steel::uart_init();
-    steel::uart_send_string("Platform -> Raspberry PI 3\r\n");
-
     steel::__event_initialize();
 
     // Call all global constructors
@@ -23,6 +18,8 @@ void gimme_all_your_lovin(void)
         (*constructor)();
     }
 
+    // No command line arguments are passed right now. This should be read from the 
+    // configuration file on the boot drive.
     main(0, nullptr);
 
     while(true);
