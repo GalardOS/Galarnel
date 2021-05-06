@@ -41,13 +41,10 @@ void async_process2() {
 
 void main(int argc, char** argv) {
     drv::bcm2835auxuart::init();
-    drv::bcm2835auxuart::send_string("Jelou from iquernel!!\r\n");
+    drv::bcm2835auxuart::send_string("Kernel entry point reached\r\n");
 
     // Initialize the printf library
     __init_printf(nullptr, [](void* p, char c){ drv::bcm2835auxuart::send(c); });
-
-    printf("sizeof(uint64) = %d\r\n", sizeof(uint64));
-    //while(true);
 
     drv::bcm2835intc::initialize();
 
