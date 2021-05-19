@@ -27,6 +27,8 @@ void async_process() {
         inline_delay(TIME_TO_WAIT);
         printf("async_process1: %d\r\n", i);
     }
+
+    printf("process1 finished\r\n");
 }
 
 void async_process2() {
@@ -37,6 +39,7 @@ void async_process2() {
         inline_delay(TIME_TO_WAIT);
         printf("async_process2: %d\r\n", i);
     }
+    printf("process2 finished\r\n");
 }
 
 void main(int argc, char** argv) {
@@ -61,4 +64,5 @@ void main(int argc, char** argv) {
         inline_delay(TIME_TO_WAIT);
         printf("main: %d\r\n", i);
     }
+    printf("main finished\r\n");
 }

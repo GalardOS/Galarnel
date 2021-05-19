@@ -2,40 +2,26 @@
 
 #include "drivers/bcm2835intc.hh"
 #include "drivers/bcm2835auxuart.hh"
+#include "drivers/bcm2835timer.hh"
 
 #include "memory/heap.hh"
 #include "util/printf.hh"
 
 #include "aarch64.hh"
 
-#define TIMER_CS        ((volatile uint32*)(0x3F000000+0x00003000))
-#define TIMER_CLO       ((volatile uint32*)(0x3F000000+0x00003004))
-#define TIMER_CHI       ((volatile uint32*)(0x3F000000+0x00003008))
-#define TIMER_C0        ((volatile uint32*)(0x3F000000+0x0000300C))
-#define TIMER_C1        ((volatile uint32*)(0x3F000000+0x00003010))
-#define TIMER_C2        ((volatile uint32*)(0x3F000000+0x00003014))
-#define TIMER_C3        ((volatile uint32*)(0x3F000000+0x00003018))
 
 constexpr uint32 MAX_PROCESSES = 100;
 scheduler::process processes[MAX_PROCESSES];
-uint32 num_processes;
+volatile uint32 num_processes;
 
-uint32 running_process_index;
+volatile uint32 running_process_index;
 
-static uint64 value;
 
 static void enable_preemption() {
     // Enable the interrupt routing from the system timer
     drv::bcm2835intc::enable_irq(33);
 
-    // Initialize the timer value to a random number (not gonna lie)
-    value += 200000;
-    *TIMER_C1 = value;
-    
-    // Send an acknowledgment in case a previous interrupt
-    // was not handled properly or not handled at all
-    uint32 acknowledgment = 1 << 1;
-    *TIMER_CS = acknowledgment;
+    drv::bcm2835timer::restart(20000);
 }
 
 static void disable_preemption() {
@@ -50,11 +36,14 @@ static void timer_handler(steel::cpu_status state) {
 
     // Save the current running program status
     processes[running_process_index].context = state;
+    asm volatile("isb");
 
-    printf("\r\nCHANGING FROM PID %d TO PID %d\r\n", running_process_index, (running_process_index + 1) % num_processes);
+    printf("\r\nCHANGING FROM PID %d TO PID ", running_process_index);
 
     // Change to the next process
     running_process_index = (running_process_index + 1) % num_processes;
+    
+    printf("%d\r\n", running_process_index);
 
     // Reenable the timer
     enable_preemption();
@@ -67,6 +56,10 @@ static void synch_handler(steel::cpu_status state) {
     // The program counter advances one instruction not to repeat
     // the instruction that caused the exception
     state.pc += 4;
+    disable_preemption();
+
+    printf("WTF a synchronous exception???????");
+    while(true);
 
     // Execute the process switching
     timer_handler(state);
@@ -74,6 +67,8 @@ static void synch_handler(steel::cpu_status state) {
 
 namespace scheduler {
     void initialize() {
+        // Disable interrupt routing to the CPU while initializing
+        // the scheduler
         asm volatile ("msr daifclr, #2");
 
         // Enable the system timer interrupts and set the timer_handler
@@ -93,10 +88,7 @@ namespace scheduler {
         // Set the first process as the running process
         running_process_index = 0;
 
-        // Initialize the timer with a random value (not gonna lie)
-        value = *TIMER_CLO;
-        value += 200000;
-        *TIMER_C1 = value;
+        drv::bcm2835timer::initialize(20000);
     }
 
     pid add_kernel_process(kernel_function exec) {
