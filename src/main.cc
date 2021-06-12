@@ -25,7 +25,7 @@ void async_process() {
         i++;
 
         inline_delay(TIME_TO_WAIT);
-        printf("async_process1: %d\r\n", i);
+//        printf("async_process1: %d\r\n", i);
     }
 
     printf("process1 finished\r\n");
@@ -37,7 +37,7 @@ void async_process2() {
         i++;
 
         inline_delay(TIME_TO_WAIT);
-        printf("async_process2: %d\r\n", i);
+//        printf("async_process2: %d\r\n", i);
     }
     printf("process2 finished\r\n");
 }
@@ -56,13 +56,20 @@ void main(int argc, char** argv) {
     // Add two random processes for testing purposes
     scheduler::add_kernel_process(async_process);
     scheduler::add_kernel_process(async_process2);
+    scheduler::add_kernel_process(async_process2);
+    scheduler::add_kernel_process(async_process2);
+    scheduler::add_kernel_process(async_process2);
+    scheduler::add_kernel_process(async_process2);
+    scheduler::add_kernel_process(async_process2);
+    scheduler::add_kernel_process(async_process2);
+    scheduler::add_kernel_process(async_process2);
 
     int i = 0;
     while(true) {
         i++;
 
         inline_delay(TIME_TO_WAIT);
-        printf("main: %d\r\n", i);
+//        printf("main: %d\r\n", i);
     }
     printf("main finished\r\n");
 }

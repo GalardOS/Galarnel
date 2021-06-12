@@ -37,14 +37,11 @@ static void timer_handler(steel::cpu_status state) {
     // Save the current running program status
     processes[running_process_index].context = state;
     asm volatile("isb");
-
-    printf("\r\nCHANGING FROM PID %d TO PID ", running_process_index);
+    printf("p%d process:\npc = %d\n\n", running_process_index, state.pc);
 
     // Change to the next process
     running_process_index = (running_process_index + 1) % num_processes;
     
-    printf("%d\r\n", running_process_index);
-
     // Reenable the timer
     enable_preemption();
     
@@ -105,6 +102,8 @@ namespace scheduler {
         proc.context.sp = (uint64)(proc.stack_buffer) + 4 * 1024 - 1;
         proc.context.pc = (uint64)exec;
         proc.context.spsr = 0b0101;
+
+        printf("process added:\npc = %d\n", proc.context.pc);
 
         // Important that this addition process is not interrupted 
         disable_preemption();
