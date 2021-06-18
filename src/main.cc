@@ -7,6 +7,8 @@
 
 #include "scheduler/scheduler.hh"
 
+#include "aarch64.hh"
+
 #define TIMER_CS        ((volatile uint32*)(0x3F000000+0x00003000))
 #define TIMER_CLO       ((volatile uint32*)(0x3F000000+0x00003004))
 #define TIMER_CHI       ((volatile uint32*)(0x3F000000+0x00003008))
@@ -48,6 +50,9 @@ void main(int argc, char** argv) {
 
     // Initialize the printf library
     __init_printf(nullptr, [](void* p, char c){ drv::bcm2835auxuart::send(c); });
+
+    printf("Processor state:\r\n");
+    printf("  · EL   = %d\r\n", aarch64::el());
 
     drv::bcm2835intc::initialize();
 
